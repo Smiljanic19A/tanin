@@ -14,14 +14,23 @@
         </div>
       </div>
     </section>
+
+    <!-- Wine Collection Section -->
+    <section class="wine-collection-section">
+      <WineSlider />
+    </section>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import WineSlider from '@/components/WineSlider.vue'
 
 export default {
   name: 'HomeView',
+  components: {
+    WineSlider
+  },
   computed: {
     ...mapGetters(['isDarkMode']),
     currentLogo() {
@@ -37,6 +46,10 @@ export default {
 <style scoped>
 .home {
   width: 100%;
+}
+
+.logo-section {
+  width: 100%;
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -45,17 +58,10 @@ export default {
   transition: var(--transition);
 }
 
-.logo-section {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 2rem;
-}
-
 .logo-container {
   text-align: center;
   max-width: 600px;
+  padding: 2rem;
 }
 
 .main-logo {
@@ -78,6 +84,10 @@ export default {
   height: 80px;
   max-width: 100%;
   transition: var(--transition);
+}
+
+.wine-collection-section {
+  width: 100%;
 }
 
 /* Responsive Design */
@@ -104,7 +114,7 @@ export default {
     height: 50px;
   }
   
-  .logo-section {
+  .logo-container {
     padding: 1rem;
   }
   
