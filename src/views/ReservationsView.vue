@@ -41,158 +41,87 @@
         <div class="tab-content">
           <!-- Book a Table Tab -->
           <div v-if="activeTab === 'booking'" class="booking-tab">
-            <h2 class="tab-title">
-              <transition name="slide-text" mode="out-in">
-                <span :key="currentLanguage + 'reservations.bookTable2'">{{ $t('reservations.bookTable') }}</span>
-              </transition>
-            </h2>
-            <p class="tab-description">
-              <transition name="slide-text" mode="out-in">
-                <span :key="currentLanguage + 'reservations.selectDate'">{{ $t('reservations.selectDate') }}</span>
-              </transition>
-            </p>
+            <h2 class="main-title">BOOK A TABLE</h2>
             
-            <!-- Desktop Layout: Calendar + Form Side by Side -->
-            <div class="booking-content">
-              <!-- Calendar -->
-              <div class="calendar-container">
-                <div class="calendar-header">
-                  <button class="nav-button" @click="previousMonth">&lt;</button>
-                  <h3 class="month-year">{{ currentMonthYear }}</h3>
-                  <button class="nav-button" @click="nextMonth">&gt;</button>
-                </div>
-                
-                <div class="calendar-grid">
-                  <div class="day-header" v-for="day in dayHeaders" :key="day">{{ day }}</div>
-                  <div 
-                    v-for="date in calendarDates" 
-                    :key="date.key"
-                    class="calendar-date"
-                    :class="{
-                      'other-month': !date.isCurrentMonth,
-                      'booked': date.isBooked,
-                      'available': date.isCurrentMonth && !date.isBooked && !date.isPast,
-                      'past': date.isPast,
-                      'selected': selectedDate && selectedDate.getTime() === date.date.getTime()
-                    }"
-                    @click="selectDate(date)"
-                  >
-                    {{ date.day }}
-                  </div>
+            <div class="booking-form">
+              <!-- Date Selection -->
+              <div class="form-group">
+                <label>Date</label>
+                <div class="date-input-container" @click="showDatePicker = true">
+                  <span class="date-display">{{ formatDisplayDate }}</span>
                 </div>
               </div>
               
-              <!-- Booking Form -->
-              <div v-if="selectedDate" class="booking-form">
-                <h4 class="form-title">{{ $t('reservations.selectedDate') }} {{ formatSelectedDate }}</h4>
-                <form @submit.prevent="submitBooking">
-                  <div class="form-group">
-                    <label for="guests">{{ $t('reservations.numberOfGuests') }}</label>
-                    <select id="guests" v-model="bookingForm.guests" required>
-                      <option value="">{{ $t('reservations.selectGuests') }}</option>
-                      <option v-for="n in 10" :key="n" :value="n">{{ n }} guest{{ n > 1 ? 's' : '' }}</option>
-                    </select>
-                  </div>
-                  
-                  <div class="form-group">
-                    <label for="time">{{ $t('reservations.preferredTime') }}</label>
-                    <select id="time" v-model="bookingForm.time" required>
-                      <option value="">{{ $t('reservations.selectTime') }}</option>
-                      <option v-for="(label, time) in $t('reservations.timeSlots')" :key="time" :value="time">{{ label }}</option>
-                    </select>
-                  </div>
-                  
-                  <div class="form-group">
-                    <label for="name">{{ $t('reservations.name') }}</label>
-                    <input type="text" id="name" v-model="bookingForm.name" required>
-                  </div>
-                  
-                  <div class="form-group">
-                    <label for="phone">{{ $t('reservations.phone') }}</label>
-                    <input type="tel" id="phone" v-model="bookingForm.phone" required>
-                  </div>
-                  
-                  <div class="form-group">
-                    <label for="email">{{ $t('reservations.email') }}</label>
-                    <input type="email" id="email" v-model="bookingForm.email" required>
-                  </div>
-                  
-                  <button type="submit" class="submit-button">{{ $t('reservations.bookTableButton') }}</button>
-                </form>
+              <!-- Time Selection -->
+              <div class="form-group">
+                <label>Time</label>
+                <select v-model="bookingForm.time" class="time-select">
+                  <option value="">Select time</option>
+                  <option value="18:00">6:00 PM</option>
+                  <option value="18:30">6:30 PM</option>
+                  <option value="19:00">7:00 PM</option>
+                  <option value="19:30">7:30 PM</option>
+                  <option value="20:00">8:00 PM</option>
+                  <option value="20:30">8:30 PM</option>
+                  <option value="21:00">9:00 PM</option>
+                  <option value="21:30">9:30 PM</option>
+                  <option value="22:00">10:00 PM</option>
+                </select>
               </div>
+              
+                             <!-- Guest Counter -->
+               <div class="form-group">
+                 <label>How many people ?</label>
+                 <div class="guest-counter">
+                   <button type="button" class="counter-btn" @click="decrementGuests">-</button>
+                   <span class="guest-count">{{ guestCount }}</span>
+                   <button type="button" class="counter-btn" @click="incrementGuests">+</button>
+                 </div>
+               </div>
             </div>
           </div>
           
           <!-- Private Reservations Tab -->
           <div v-if="activeTab === 'private'" class="private-tab">
-            <h2 class="tab-title">
-              <transition name="slide-text" mode="out-in">
-                <span :key="currentLanguage + 'reservations.privateTitle'">{{ $t('reservations.privateTitle') }}</span>
-              </transition>
-            </h2>
-            <p class="tab-description">
-              <transition name="slide-text" mode="out-in">
-                <span :key="currentLanguage + 'reservations.privateDescription'">{{ $t('reservations.privateDescription') }}</span>
-              </transition>
-            </p>
-            
-            <form @submit.prevent="submitPrivateReservation" class="private-form">
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="private-name">Name *</label>
-                  <input type="text" id="private-name" v-model="privateForm.name" required>
-                </div>
-                
-                <div class="form-group">
-                  <label for="private-email">Email *</label>
-                  <input type="email" id="private-email" v-model="privateForm.email" required>
-                </div>
-              </div>
-              
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="private-phone">Phone *</label>
-                  <input type="tel" id="private-phone" v-model="privateForm.phone" required>
-                </div>
-                
-                <div class="form-group">
-                  <label for="event-date">Preferred Date</label>
-                  <input type="date" id="event-date" v-model="privateForm.date">
-                </div>
-              </div>
-              
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="event-type">Event Type</label>
-                  <select id="event-type" v-model="privateForm.eventType">
-                    <option value="">Select event type</option>
-                    <option value="birthday">Birthday Party</option>
-                    <option value="anniversary">Anniversary</option>
-                    <option value="corporate">Corporate Event</option>
-                    <option value="wedding">Wedding Reception</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-                
-                <div class="form-group">
-                  <label for="guest-count">Expected Guests</label>
-                  <input type="number" id="guest-count" v-model="privateForm.guestCount" min="1" max="100">
-                </div>
-              </div>
-              
-              <div class="form-group">
-                <label for="special-requests">Special Requests / Message *</label>
-                <textarea 
-                  id="special-requests" 
-                  v-model="privateForm.message" 
-                  rows="5" 
-                  placeholder="Tell us about your event, special dietary requirements, decoration preferences, or any other details..."
-                  required
-                ></textarea>
-              </div>
-              
-              <button type="submit" class="submit-button">Send Inquiry</button>
-            </form>
+            <h2 class="main-title">PRIVATE RESERVATIONS</h2>
+            <p class="coming-soon">Coming soon...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Date Picker Popup -->
+    <div v-if="showDatePicker" class="date-picker-overlay" @click="closeDatePicker">
+      <div class="date-picker-popup" @click.stop>
+        <div class="date-picker-header">
+          <h3>Select Date</h3>
+          <button class="close-btn" @click="closeDatePicker">×</button>
+        </div>
+        
+        <div class="calendar-container">
+          <div class="calendar-header">
+            <button class="nav-button" @click="previousMonth">&lt;</button>
+            <h3 class="month-year">{{ currentMonthYear }}</h3>
+            <button class="nav-button" @click="nextMonth">&gt;</button>
+          </div>
+          
+          <div class="calendar-grid">
+            <div class="day-header" v-for="day in dayHeaders" :key="day">{{ day }}</div>
+            <div 
+              v-for="date in calendarDates" 
+              :key="date.key"
+              class="calendar-date"
+              :class="{
+                'other-month': !date.isCurrentMonth,
+                'booked': date.isBooked,
+                'available': date.isCurrentMonth && !date.isBooked && !date.isPast,
+                'past': date.isPast,
+                'selected': selectedDate && selectedDate.getTime() === date.date.getTime()
+              }"
+              @click="selectDate(date)"
+            >
+              {{ date.day }}
+            </div>
           </div>
         </div>
       </div>
@@ -210,8 +139,10 @@ export default {
   data() {
     return {
       activeTab: 'booking',
+      showDatePicker: false,
       currentDate: new Date(),
-      selectedDate: null,
+      selectedDate: new Date(2025, 1, 20), // Default to Feb 20, 2025
+      guestCount: 3,
       bookedDates: [
         // Hard-coded booked dates for demo
         new Date(2024, 11, 15), // December 15, 2024
@@ -222,23 +153,14 @@ export default {
         new Date(2025, 0, 1),   // January 1, 2025
         new Date(2025, 0, 14),  // January 14, 2025
         new Date(2025, 0, 20),  // January 20, 2025
+        new Date(2025, 1, 14),  // February 14, 2025
+        new Date(2025, 1, 28),  // February 28, 2025
       ],
       bookingForm: {
-        guests: '',
-        time: '',
+        time: '20:30',
         name: '',
         phone: '',
         email: ''
-      },
-      privateForm: {
-        name: '',
-        email: '',
-        phone: '',
-        date: '',
-        eventType: '',
-        guestCount: '',
-        budget: '',
-        message: ''
       },
       dayHeaders: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
     }
@@ -253,10 +175,10 @@ export default {
       const month = monthNames[Object.keys(monthNames)[this.currentDate.getMonth()]];
       return `${month} ${this.currentDate.getFullYear()}`;
     },
-    formatSelectedDate() {
-      if (!this.selectedDate) return '';
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
-      return this.selectedDate.toLocaleDateString('en-US', options);
+    formatDisplayDate() {
+      if (!this.selectedDate) return 'Select date';
+      const options = { day: 'numeric', month: 'short', year: 'numeric' };
+      return this.selectedDate.toLocaleDateString('en-GB', options);
     },
     calendarDates() {
       const year = this.currentDate.getFullYear();
@@ -329,27 +251,20 @@ export default {
     selectDate(dateObj) {
       if (!dateObj.isCurrentMonth || dateObj.isBooked || dateObj.isPast) return;
       this.selectedDate = dateObj.date;
-      // Reset form when selecting new date
-      this.bookingForm = {
-        guests: '',
-        time: '',
-        name: '',
-        phone: '',
-        email: ''
-      };
+      this.showDatePicker = false;
     },
-    submitBooking() {
-      alert(`Booking request submitted for ${this.formatSelectedDate} at ${this.bookingForm.time} for ${this.bookingForm.guests} guests. Contact: ${this.bookingForm.name} (${this.bookingForm.phone})`);
-      // Here you would typically send the data to your backend
-      console.log('Booking submitted:', {
-        date: this.selectedDate,
-        ...this.bookingForm
-      });
+    closeDatePicker() {
+      this.showDatePicker = false;
     },
-    submitPrivateReservation() {
-      alert(`Private reservation inquiry submitted from ${this.privateForm.name}. We'll contact you soon!`);
-      // Here you would typically send the data to your backend
-      console.log('Private reservation submitted:', this.privateForm);
+    incrementGuests() {
+      if (this.guestCount < 10) {
+        this.guestCount++;
+      }
+    },
+    decrementGuests() {
+      if (this.guestCount > 1) {
+        this.guestCount--;
+      }
     }
   }
 }
@@ -379,22 +294,22 @@ export default {
 .reservations-container {
   width: 100%;
   text-align: center;
-  padding: 1rem;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
   background-color: var(--bg-color);
-  overflow: hidden;
-  max-width: 1200px;
+  max-width: 600px;
   margin: 0 auto;
+  margin-top: 22px;
 }
 
 .reservations-title {
   font-size: 2.5rem;
   font-weight: 300;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
   letter-spacing: 0.3em;
   text-align: center;
   width: 100%;
@@ -402,9 +317,8 @@ export default {
 
 .tab-navigation {
   display: flex;
-  justify-content: center;
   gap: 0;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
   width: 100%;
   border-bottom: 2px solid var(--text-color);
 }
@@ -413,7 +327,7 @@ export default {
   background: none;
   border: none;
   color: var(--text-color);
-  padding: 1rem 2rem;
+  padding: 1rem 0.5rem;
   font-size: 1.1rem;
   font-weight: 300;
   letter-spacing: 0.1em;
@@ -421,6 +335,11 @@ export default {
   transition: all 0.3s ease;
   border-bottom: 3px solid transparent;
   opacity: 0.7;
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .tab-button.active {
@@ -439,39 +358,208 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
-.tab-title {
-  font-size: 1.5rem;
-  font-weight: 300;
-  margin-bottom: 0.5rem;
+.main-title {
+  font-size: 2rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  margin-bottom: 3rem;
   color: var(--text-color);
 }
 
-.tab-description {
-  margin-bottom: 1rem;
-  opacity: 0.8;
-  font-size: 1rem;
-}
-
-/* Booking Tab Layout */
-.booking-content {
-  display: flex;
-  gap: 2rem;
-  align-items: flex-start;
-  justify-content: center;
+.booking-form {
   width: 100%;
-  max-width: 1000px;
-  height: calc(100vh - 200px);
-  overflow: hidden;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
 }
 
-/* Calendar Styles */
-.calendar-container {
+.form-group {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem 0;
+  position: relative;
+}
+
+.form-group::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: var(--text-color);
+  opacity: 0.3;
+}
+
+.form-group label {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--text-color);
+  text-align: left;
+  opacity: 1;
+  line-height: 1.5;
   flex: 1;
-  max-width: 450px;
-  min-width: 350px;
+  display: flex;
+  align-items: center;
+}
+
+.date-input-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: transparent;
+  flex: 2;
+}
+
+.form-group:hover::after {
+  background-color: #ca371c;
+  opacity: 0.8;
+}
+
+.date-display {
+  font-size: 1.2rem;
+  color: var(--text-color);
+  line-height: 1.5;
+}
+
+.date-arrow {
+  font-size: 1.2rem;
+  color: var(--text-color);
+  font-weight: bold;
+}
+
+.time-select {
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: var(--text-color);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 2;
+  text-align: right;
+  line-height: 1.5;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.time-select:focus {
+  outline: none;
+}
+
+.form-group:has(.time-select:focus)::after {
+  background-color: #ca371c;
+  opacity: 0.8;
+}
+
+.guest-counter {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.counter-btn {
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: #8B7355;
+  color: white;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.counter-btn:hover {
+  background-color: #6B5742;
+  color: white;
+}
+
+.guest-count {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--text-color);
+  flex: 1;
+  text-align: center;
+}
+
+.coming-soon {
+  font-size: 1.2rem;
+  opacity: 0.7;
+  color: var(--text-color);
+}
+
+/* Date Picker Popup */
+.date-picker-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.date-picker-popup {
+  background: var(--bg-color);
+  border: 2px solid var(--text-color);
+  border-radius: 8px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.date-picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.date-picker-header h3 {
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: var(--text-color);
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn:hover {
+  color: #ca371c;
 }
 
 .calendar-header {
@@ -501,9 +589,10 @@ export default {
 }
 
 .month-year {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 400;
   margin: 0;
+  color: var(--text-color);
 }
 
 .calendar-grid {
@@ -516,24 +605,26 @@ export default {
 
 .day-header {
   background-color: var(--bg-color);
-  padding: 0.5rem 0.25rem;
+  padding: 0.8rem 0.5rem;
   text-align: center;
   font-weight: 600;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   opacity: 0.7;
+  color: var(--text-color);
 }
 
 .calendar-date {
   background-color: var(--bg-color);
-  padding: 0.5rem 0.25rem;
+  padding: 0.8rem 0.5rem;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  min-height: 35px;
+  min-height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.9rem;
+  color: var(--text-color);
 }
 
 .calendar-date.other-month {
@@ -562,90 +653,6 @@ export default {
   background-color: #ca371c;
   color: white;
   font-weight: bold;
-}
-
-/* Form Styles */
-.booking-form {
-  flex: 1;
-  max-width: 350px;
-  min-width: 300px;
-  padding: 1.5rem;
-  border: 2px solid var(--text-color);
-  border-radius: 8px;
-  background-color: var(--bg-color);
-  height: fit-content;
-  max-height: calc(100vh - 250px);
-  overflow-y: auto;
-}
-
-.form-title {
-  font-size: 1.1rem;
-  margin-bottom: 1rem;
-  color: var(--text-color);
-  font-weight: 400;
-}
-
-.private-form {
-  width: 100%;
-  max-width: 600px;
-}
-
-.form-group {
-  margin-bottom: 1rem;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: var(--text-color);
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-  width: 100%;
-  padding: 0.6rem;
-  border: 2px solid var(--text-color);
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  border-radius: 4px;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: #ca371c;
-}
-
-.submit-button {
-  background: none;
-  border: 2px solid var(--text-color);
-  color: var(--text-color);
-  padding: 0.8rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 300;
-  letter-spacing: 0.1em;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-transform: uppercase;
-  width: 100%;
-  margin-top: 0.5rem;
-}
-
-.submit-button:hover {
-  background-color: var(--text-color);
-  color: var(--bg-color);
 }
 
 .mobile-background {
@@ -692,38 +699,24 @@ export default {
   }
   
   .reservations-layout {
-    flex-direction: column;
-    height: 100vh;
     position: relative;
     z-index: 2;
   }
   
   .reservations-container {
-    width: 100%;
-    height: 100vh;
-    padding: 0;
     background-color: transparent;
-    text-align: center;
-    align-items: center;
-    justify-content: flex-start;
-    overflow: hidden;
-    margin: 0;
-    max-width: none;
+    padding: 1rem;
   }
   
   .reservations-title {
-    font-size: 2.2rem;
     color: white;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-    letter-spacing: 0.3em;
-    margin: 1rem 0 0.8rem 0;
-    padding: 0;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
   }
   
   .tab-navigation {
-    margin: 0 0 0.5rem 0;
     border-bottom-color: rgba(255, 255, 255, 0.5);
-    padding: 0 1rem;
   }
   
   .tab-button {
@@ -732,7 +725,7 @@ export default {
     color: white;
     backdrop-filter: blur(4px);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-    padding: 0.8rem 1.5rem;
+    padding: 1rem 0.25rem;
     font-size: 1rem;
   }
   
@@ -741,276 +734,73 @@ export default {
     border-color: white;
   }
   
-  .tab-content {
-    height: calc(100vh - 140px);
-    overflow-y: auto;
-    padding: 0 1rem;
-    flex: 1;
-  }
-  
-  .tab-title {
+  .main-title {
     color: white;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-    font-size: 1.4rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  .tab-description {
-    color: white;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-    font-size: 1rem;
-    margin-bottom: 1rem;
-  }
-  
-  .booking-content {
-    flex-direction: column;
-    gap: 1.5rem;
-    height: auto;
-    overflow: visible;
-  }
-  
-  .calendar-container {
-    min-width: auto;
-    max-width: 100%;
-  }
-  
-  .calendar-header {
-    margin-bottom: 1rem;
-  }
-  
-  .month-year {
     font-size: 1.8rem;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-  }
-  
-  .nav-button {
-    border-color: rgba(255, 255, 255, 0.8);
-    color: white;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(4px);
-    width: 50px;
-    height: 50px;
-    font-size: 1.5rem;
-  }
-  
-  .nav-button:hover {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-  }
-  
-  .calendar-grid {
-    font-size: 1.4rem;
-    gap: 2px;
-  }
-  
-  .day-header {
-    background: rgba(255, 255, 255, 0.9);
-    color: #000;
-    padding: 1.2rem 0.3rem;
-    font-size: 1.1rem;
-    font-weight: bold;
-  }
-  
-  .calendar-date {
-    min-height: 60px;
-    padding: 1.2rem 0.3rem;
-    font-size: 1.4rem;
-    background: rgba(255, 255, 255, 0.9);
-    color: #000;
-  }
-  
-  .calendar-date.other-month {
-    background: rgba(255, 255, 255, 0.5);
-    opacity: 0.5;
-  }
-  
-  .calendar-date.past {
-    background: rgba(255, 255, 255, 0.6);
-    opacity: 0.6;
-  }
-  
-  .calendar-date.booked {
-    background-color: #ff6b6b;
-    color: white;
-  }
-  
-  .calendar-date.available:hover,
-  .calendar-date.selected {
-    background-color: #ca371c;
-    color: white;
+    margin-bottom: 2rem;
   }
   
   .booking-form {
-    min-width: auto;
-    max-width: 100%;
-    margin: 0;
-    padding: 1.5rem;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    max-height: none;
-    overflow-y: visible;
-    border-radius: 10px;
-  }
-  
-  .form-title {
-    color: #000;
-    text-shadow: none;
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-    font-weight: 500;
-  }
-  
-  .form-group {
-    margin-bottom: 1rem;
+    padding: 2rem;
   }
   
   .form-group label {
     color: #000;
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
   }
   
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    background: rgba(255, 255, 255, 0.9);
+  .form-group::after {
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+  
+  .date-input-container,
+  .time-select {
     color: #000;
-    border-color: rgba(0, 0, 0, 0.3);
-    font-size: 1rem;
-    padding: 0.8rem;
-    min-height: 45px;
   }
   
-  .submit-button {
-    background: rgba(202, 55, 28, 0.9);
-    border: 2px solid #ca371c;
+  .counter-btn {
+    background: #8B7355;
     color: white;
-    backdrop-filter: blur(4px);
-    text-shadow: none;
-    padding: 1rem;
-    font-size: 1.1rem;
-    min-height: 50px;
+    border: none;
   }
   
-  .submit-button:hover {
-    background: #ca371c;
-    color: white;
-    border-color: #ca371c;
-  }
-  
-  /* Private Form Mobile Styles */
-  .private-form {
-    max-width: 100%;
-  }
-  
-  .form-row {
-    grid-template-columns: 1fr;
-    gap: 0.8rem;
-    margin-bottom: 0.8rem;
-  }
-  
-  .private-form .form-group input,
-  .private-form .form-group select,
-  .private-form .form-group textarea {
-    background: rgba(255, 255, 255, 0.95);
+  .guest-count {
     color: #000;
-    border-color: rgba(0, 0, 0, 0.3);
   }
   
-  .private-form .form-group label {
+  .coming-soon {
     color: white;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-    font-size: 0.9rem;
   }
   
-  .private-form .submit-button {
-    background: rgba(202, 55, 28, 0.9);
-    border: 2px solid #ca371c;
-    color: white;
+  .date-picker-popup {
+    width: 95%;
+    margin: 1rem;
   }
 }
 
 @media (max-width: 480px) {
   .reservations-title {
-    font-size: 1.8rem;
-    margin: 0.8rem 0 0.5rem 0;
-    letter-spacing: 0.2em;
-  }
-  
-  .tab-button {
-    padding: 0.7rem 1rem;
-    font-size: 0.9rem;
-  }
-  
-  .tab-content {
-    height: calc(100vh - 120px);
-    padding: 0 0.8rem;
-  }
-  
-  .tab-title {
-    font-size: 1.2rem;
-  }
-  
-  .tab-description {
-    font-size: 0.9rem;
-  }
-  
-  .booking-content {
-    gap: 1.2rem;
-  }
-  
-  .calendar-date {
-    min-height: 55px;
-    font-size: 1.2rem;
-    padding: 1rem 0.2rem;
-  }
-  
-  .day-header {
-    padding: 1rem 0.2rem;
-    font-size: 1rem;
-  }
-  
-  .nav-button {
-    width: 45px;
-    height: 45px;
-    font-size: 1.3rem;
-  }
-  
-  .month-year {
     font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .main-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
   }
   
   .booking-form {
-    padding: 1.2rem;
+    padding: 1.5rem;
+    gap: 1.2rem;
   }
   
-  .form-title {
-    font-size: 1rem;
-    margin-bottom: 0.8rem;
-  }
-  
-  .form-group {
-    margin-bottom: 0.8rem;
-  }
-  
-  .form-group label {
-    font-size: 0.9rem;
-  }
-  
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    padding: 0.7rem;
-    font-size: 0.9rem;
-    min-height: 40px;
-  }
-  
-  .submit-button {
-    padding: 0.9rem;
-    font-size: 1rem;
-    min-height: 45px;
+  .counter-btn {
+    width: 45px;
+    height: 45px;
+    font-size: 1.3rem;
   }
 }
 </style> 
