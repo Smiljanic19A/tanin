@@ -1,7 +1,13 @@
 <template>
   <div class="menu-view">
+    <!-- Mobile background (hidden on desktop) -->
+    <div class="mobile-background" v-if="isMobile">
+      <img src="/plate.svg" alt="Background" class="background-image">
+      <div class="background-overlay"></div>
+    </div>
+    
     <div class="menu-layout">
-      <!-- Left side - Plate Image -->
+      <!-- Left side - Plate Image (desktop only) -->
       <div class="plate-container">
         <img src="/plate.svg" alt="Food Plate" class="plate-image">
       </div>
@@ -34,7 +40,10 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'MenuView',
   computed: {
-    ...mapGetters(['isDarkMode'])
+    ...mapGetters(['isDarkMode']),
+    isMobile() {
+      return window.innerWidth <= 768;
+    }
   },
   methods: {
     openWineCard() {
@@ -146,48 +155,93 @@ export default {
   transition: all 0.3s ease;
 }
 
+.mobile-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: none;
+}
+
+.background-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.background-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
+  .mobile-background {
+    display: block;
+  }
+  
   .menu-layout {
     flex-direction: column;
     height: auto;
     min-height: 100vh;
+    position: relative;
+    z-index: 2;
   }
   
   .plate-container {
-    flex: none;
-    height: 50vh;
-    width: 100%;
+    display: none;
   }
   
   .menu-container {
     flex: none;
     width: 100%;
-    height: auto;
+    height: 100vh;
     padding: 2rem 1rem;
+    background-color: transparent;
+    text-align: center;
+    align-items: center;
   }
   
   .menu-title {
     font-size: 3.5rem;
     margin-bottom: 2rem;
-    text-align: center;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    letter-spacing: 0.4em;
   }
   
   .menu-button {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    color: white;
     font-size: 1.1rem;
     padding: 1rem 2rem;
     min-width: 220px;
+    backdrop-filter: blur(4px);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  }
+  
+  .menu-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-color: white;
+    transform: translateY(-2px);
   }
 }
 
 @media (max-width: 480px) {
-  .plate-container {
-    height: 40vh;
-  }
-  
   .menu-title {
     font-size: 2.8rem;
     margin-bottom: 1.5rem;
+    letter-spacing: 0.3em;
   }
   
   .menu-button {
@@ -198,6 +252,10 @@ export default {
   
   .menu-buttons {
     gap: 1.2rem;
+  }
+  
+  .menu-container {
+    padding: 2rem 0.5rem;
   }
 }
 </style> 

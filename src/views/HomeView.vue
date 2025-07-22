@@ -372,6 +372,10 @@ export default {
     gap: 2rem;
   }
   
+  .contact-grid::before {
+    display: none;
+  }
+  
   .contact-title {
     font-size: 1.3rem;
   }
