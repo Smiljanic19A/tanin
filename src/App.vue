@@ -4,7 +4,9 @@
       <div class="nav-container">
         <!-- Left Side: Logo -->
         <div class="nav-left">
-          <img :src="currentLogo" alt="Tanin Logo" class="nav-logo-small" :class="{ 'logo-expanded': isNavDrawerOpen }">
+          <router-link to="/" @click="closeNavDrawer">
+            <img :src="currentLogo" alt="Tanin Logo" class="nav-logo-small" :class="{ 'logo-expanded': isNavDrawerOpen }">
+          </router-link>
         </div>
         
         <!-- Right Side: Theme Toggle, Languages, Nav Drawer -->
@@ -30,12 +32,17 @@
       <div class="nav-drawer" :class="{ 'open': isNavDrawerOpen }" @click.stop>
         <div class="nav-drawer-content">
           <nav class="main-nav">
+            <router-link to="/" class="nav-main-item" @click="closeNavDrawer">
+              <span class="nav-text">Home</span>
+              <span class="nav-arrow">→</span>
+            </router-link>
             <router-link to="/menu" class="nav-main-item" @click="closeNavDrawer">
               <span class="nav-text">Menu</span>
               <span class="nav-arrow">→</span>
             </router-link>
             <a href="#" class="nav-main-item" @click="closeNavDrawer">
               <span class="nav-text">Reservations</span>
+              <span class="nav-arrow">→</span>
             </a>
             <a href="#" class="nav-main-item" @click="scrollToLocation">
               <span class="nav-text">Location</span>
@@ -79,13 +86,26 @@ export default {
       event.preventDefault();
       this.closeNavDrawer();
       
-      // Add a small delay to let the drawer close first
-      setTimeout(() => {
-        const locationSection = document.getElementById('location-section');
-        if (locationSection) {
-          locationSection.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 300);
+      // Check if we're already on the home page
+      if (this.$route.path === '/') {
+        // We're on home, just scroll
+        setTimeout(() => {
+          const locationSection = document.getElementById('location-section');
+          if (locationSection) {
+            locationSection.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 300);
+      } else {
+        // Navigate to home first, then scroll
+        this.$router.push('/').then(() => {
+          setTimeout(() => {
+            const locationSection = document.getElementById('location-section');
+            if (locationSection) {
+              locationSection.scrollIntoView({ behavior: 'smooth' });
+            }
+          }, 300);
+        });
+      }
     }
   },
   mounted() {
@@ -157,6 +177,12 @@ export default {
 }
 
 .nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.nav-left a {
+  text-decoration: none;
   display: flex;
   align-items: center;
 }
