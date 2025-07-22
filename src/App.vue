@@ -30,14 +30,14 @@
       <div class="nav-drawer" :class="{ 'open': isNavDrawerOpen }" @click.stop>
         <div class="nav-drawer-content">
           <nav class="main-nav">
-            <a href="#" class="nav-main-item" @click="closeNavDrawer">
+            <router-link to="/menu" class="nav-main-item" @click="closeNavDrawer">
               <span class="nav-text">Menu</span>
-            
-            </a>
+              <span class="nav-arrow">→</span>
+            </router-link>
             <a href="#" class="nav-main-item" @click="closeNavDrawer">
               <span class="nav-text">Reservations</span>
             </a>
-            <a href="#" class="nav-main-item" @click="closeNavDrawer">
+            <a href="#" class="nav-main-item" @click="scrollToLocation">
               <span class="nav-text">Location</span>
             </a>
           </nav>
@@ -74,6 +74,18 @@ export default {
     },
     closeNavDrawer() {
       this.isNavDrawerOpen = false
+    },
+    scrollToLocation(event) {
+      event.preventDefault();
+      this.closeNavDrawer();
+      
+      // Add a small delay to let the drawer close first
+      setTimeout(() => {
+        const locationSection = document.getElementById('location-section');
+        if (locationSection) {
+          locationSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 300);
     }
   },
   mounted() {
@@ -349,6 +361,10 @@ export default {
   align-items: center;
   gap: 1rem;
   cursor: pointer;
+}
+
+.nav-main-item.router-link-exact-active {
+  color: #ca371c;
 }
 
 .nav-main-item:hover {

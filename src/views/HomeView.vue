@@ -39,7 +39,7 @@
     </section>
 
     <!-- Contact Information Section -->
-    <section class="contact-section">
+    <section class="contact-section" id="location-section">
       <div class="contact-hero-image">
         <img src="/banner_plate.svg" alt="Delicious Food" class="food-image">
         <div class="logo-overlay">
