@@ -4,7 +4,7 @@
       <div class="nav-container">
         <!-- Left Side: Logo -->
         <div class="nav-left">
-          <img :src="currentLogo" alt="Tanin Logo" class="nav-logo-small">
+          <img :src="currentLogo" alt="Tanin Logo" class="nav-logo-small" :class="{ 'logo-expanded': isNavDrawerOpen }">
         </div>
         
         <!-- Right Side: Theme Toggle, Languages, Nav Drawer -->
@@ -14,8 +14,8 @@
           </button>
           <button class="lang-option active">Eng</button>
           <button class="lang-option">Srb</button>
-          <button class="nav-drawer-button" @click="toggleNavDrawer" aria-label="Open navigation menu">
-            <div class="hamburger-icon">
+          <button class="nav-drawer-button" @click="toggleNavDrawer" :aria-label="isNavDrawerOpen ? 'Close navigation menu' : 'Open navigation menu'">
+            <div class="hamburger-icon" :class="{ 'open': isNavDrawerOpen }">
               <span></span>
               <span></span>
               <span></span>
@@ -121,7 +121,7 @@ export default {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 2000;
   transition: all 0.3s ease;
 }
 
@@ -141,7 +141,12 @@ export default {
 .nav-logo-small {
   height: 35px;
   width: auto;
-  transition: var(--transition);
+  transition: all 0.3s ease;
+  transform-origin: top left;
+}
+
+.nav-logo-small.logo-expanded {
+  transform: scale(3) translate(15%, 15%);
 }
 
 .nav-right {
@@ -212,13 +217,45 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  position: relative;
+  width: 20px;
+  height: 16px;
+    z-index: 10000;
+
 }
 
 .hamburger-icon span {
   width: 20px;
   height: 2px;
   background-color: var(--text-color);
-  transition: var(--transition);
+  transition: all 0.3s ease;
+  transform-origin: center;
+  position: absolute;
+}
+
+.hamburger-icon span:nth-child(1) {
+  top: 0;
+}
+
+.hamburger-icon span:nth-child(2) {
+  top: 7px;
+}
+
+.hamburger-icon span:nth-child(3) {
+  top: 14px;
+}
+
+/* Hamburger to X animation */
+.hamburger-icon.open span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger-icon.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-icon.open span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -6px);
 }
 
 .nav-drawer-button:hover .hamburger-icon span {
@@ -247,31 +284,32 @@ export default {
 .nav-drawer {
   position: fixed;
   top: 0;
-  right: 0;
+  left: 0;
   height: 100vh;
-  width: 100%;
-  max-width: 400px;
-  background-color: var(--nav-bg);
-  transform: translateX(100%);
-  transition: transform 0.3s ease;
+  width: 100vw;
+  background-color: var(--bg-color);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
   z-index: 1600;
-  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-}
-
-.dark-mode .nav-drawer {
-  box-shadow: -5px 0 15px rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .nav-drawer.open {
-  transform: translateX(0);
+  opacity: 1;
+  visibility: visible;
 }
 
 .nav-drawer-content {
   padding: 2rem;
   height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 100%;
 }
 
 .nav-drawer-content h2 {
@@ -317,10 +355,6 @@ export default {
     font-size: 0.9rem;
     padding: 0.4rem 0.8rem;
   }
-  
-  .nav-drawer {
-    max-width: 320px;
-  }
 }
 
 @media (max-width: 480px) {
@@ -342,10 +376,6 @@ export default {
     font-size: 0.8rem;
   }
   
-  .nav-drawer {
-    max-width: 280px;
-  }
-  
   .main-content {
     margin-top: 60px;
   }
@@ -355,3 +385,4 @@ export default {
   }
 }
 </style>
+
