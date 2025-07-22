@@ -14,6 +14,11 @@ const routes = [
     component: MenuView
   },
   {
+    path: '/reservations',
+    name: 'Reservations',
+    component: () => import(/* webpackChunkName: "reservations" */ '../views/ReservationsView.vue')
+  },
+  {
     path: '/about',
     name: 'About',
     // route level code-splitting

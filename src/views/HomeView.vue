@@ -98,6 +98,10 @@ export default {
     currentBannerText() {
       return this.isDarkMode ? '/banner_text_light.svg' : '/banner_text_dark.svg'
     }
+  },
+  mounted() {
+    // Ensure page loads at the top (logo section)
+    window.scrollTo(0, 0)
   }
 }
 </script>
@@ -110,11 +114,13 @@ export default {
 .logo-section {
   width: 100%;
   min-height: 100vh;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: var(--bg-color);
   transition: var(--transition);
+  scroll-snap-align: start;
 }
 
 .logo-container {
@@ -147,17 +153,21 @@ export default {
 
 .wine-collection-section {
   width: 100%;
+  height: 100vh;
+  scroll-snap-align: start;
 }
 
 .restaurant-section {
   width: 100%;
   min-height: 100vh;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: var(--bg-color);
   transition: var(--transition);
   padding: 4rem 2rem;
+  scroll-snap-align: start;
 }
 
 .restaurant-container {
@@ -205,8 +215,10 @@ export default {
 /* Contact Section */
 .contact-section {
   width: 100%;
+  min-height: 100vh;
   background-color: var(--bg-color);
   transition: var(--transition);
+  scroll-snap-align: start;
 }
 
 .contact-hero-image {

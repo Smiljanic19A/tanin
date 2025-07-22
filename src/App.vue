@@ -14,8 +14,24 @@
           <button class="theme-toggle" @click="toggleTheme" :aria-label="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'">
             <span class="theme-icon">{{ isDarkMode ? '☀️' : '🌙' }}</span>
           </button>
-          <button class="lang-option active">Eng</button>
-          <button class="lang-option">Srb</button>
+          
+          <!-- Language Dropdown -->
+          <div class="language-dropdown" @click.stop>
+            <button class="lang-dropdown-button" :class="{ 'open': isLanguageDropdownOpen }" @click="toggleLanguageDropdown">
+              <img :src="currentLanguageFlag" :alt="currentLanguage" class="flag-icon">
+              <span class="dropdown-arrow" :class="{ 'open': isLanguageDropdownOpen }">▼</span>
+            </button>
+            <div class="lang-dropdown-menu" :class="{ 'open': isLanguageDropdownOpen }">
+              <button class="lang-dropdown-item" :class="{ 'active': currentLanguage === 'English' }" @click="selectLanguage('English')">
+                <img src="/english.png" alt="English" class="flag-icon-menu">
+                <span>English</span>
+              </button>
+              <button class="lang-dropdown-item" :class="{ 'active': currentLanguage === 'Serbian' }" @click="selectLanguage('Serbian')">
+                <img src="/serbian.png" alt="Serbian" class="flag-icon-menu">
+                <span>Serbian</span>
+              </button>
+            </div>
+          </div>
           <button class="nav-drawer-button" @click="toggleNavDrawer" :aria-label="isNavDrawerOpen ? 'Close navigation menu' : 'Open navigation menu'">
             <div class="hamburger-icon" :class="{ 'open': isNavDrawerOpen }">
               <span></span>
@@ -40,10 +56,10 @@
               <span class="nav-text">Menu</span>
               <span class="nav-arrow">→</span>
             </router-link>
-            <a href="#" class="nav-main-item" @click="closeNavDrawer">
+            <router-link to="/reservations" class="nav-main-item" @click="closeNavDrawer">
               <span class="nav-text">Reservations</span>
               <span class="nav-arrow">→</span>
-            </a>
+            </router-link>
             <a href="#" class="nav-main-item" @click="scrollToLocation">
               <span class="nav-text">Location</span>
             </a>
@@ -65,13 +81,18 @@ export default {
   name: 'App',
   data() {
     return {
-      isNavDrawerOpen: false
+      isNavDrawerOpen: false,
+      isLanguageDropdownOpen: false,
+      currentLanguage: 'English'
     }
   },
   computed: {
     ...mapGetters(['isDarkMode']),
     currentLogo() {
       return this.isDarkMode ? '/logo_dark.svg' : '/logo_light.svg'
+    },
+    currentLanguageFlag() {
+      return this.currentLanguage === 'English' ? '/english.png' : '/serbian.png'
     }
   },
   methods: {
@@ -81,6 +102,15 @@ export default {
     },
     closeNavDrawer() {
       this.isNavDrawerOpen = false
+    },
+    toggleLanguageDropdown() {
+      this.isLanguageDropdownOpen = !this.isLanguageDropdownOpen
+    },
+    selectLanguage(lang) {
+      this.currentLanguage = lang
+      this.isLanguageDropdownOpen = false
+      // TODO: Implement actual language switching logic here
+      console.log('Language switched to:', lang)
     },
     scrollToLocation(event) {
       event.preventDefault();
@@ -114,6 +144,13 @@ export default {
     if (savedTheme === 'dark') {
       this.$store.dispatch('setTheme', true)
     }
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.language-dropdown')) {
+        this.isLanguageDropdownOpen = false
+      }
+    })
   },
   watch: {
     isDarkMode(newVal) {
@@ -145,6 +182,34 @@ export default {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+html {
+  scroll-snap-type: y mandatory;
+}
+
+/* Custom Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ca371c;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b12f17;
+}
+
+/* Firefox scrollbar */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #ca371c var(--bg-color);
 }
 
 #app {
@@ -192,6 +257,7 @@ export default {
   width: auto;
   transition: all 0.3s ease;
   transform-origin: top left;
+  padding-left: 16px;
 }
 
 .nav-logo-small.logo-expanded {
@@ -227,26 +293,116 @@ export default {
   font-size: 1.2rem;
 }
 
-.lang-option {
+/* Language Dropdown */
+.language-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.lang-dropdown-button {
   background: none;
   border: none;
   color: var(--text-color);
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 300;
   cursor: pointer;
-  padding: 0.5rem 1rem;
+  padding: 0.3rem 0.8rem;
   transition: var(--transition);
-  opacity: 0.7;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0.8;
 }
 
-.lang-option.active {
+.lang-dropdown-button:hover {
   opacity: 1;
-  font-weight: 700;
   color: #ca371c;
 }
 
-.lang-option:hover {
+.lang-dropdown-button.open {
   opacity: 1;
+  color: #ca371c;
+}
+
+.dropdown-arrow {
+  font-size: 0.6rem;
+  transition: all 0.3s ease;
+  opacity: 0.5;
+}
+
+.dropdown-arrow.open {
+  transform: rotate(180deg);
+  opacity: 1;
+}
+
+.lang-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  min-width: 120px;
+  background: var(--bg-color);
+  border: 1px solid rgba(202, 55, 28, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.dark-mode .lang-dropdown-menu {
+  box-shadow: 0 8px 32px rgba(255, 255, 255, 0.1);
+}
+
+.lang-dropdown-menu.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.lang-dropdown-item {
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  font-weight: 300;
+  cursor: pointer;
+  padding: 1rem 1.5rem;
+  text-align: left;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  letter-spacing: 0.05em;
+  opacity: 0.7;
+}
+
+.lang-dropdown-item:hover {
+  opacity: 1;
+  color: #ca371c;
+  background-color: rgba(202, 55, 28, 0.05);
+}
+
+.lang-dropdown-item.active {
+  color: #ca371c;
+  font-weight: 500;
+  opacity: 1;
+}
+
+/* Flag Icons */
+.flag-icon {
+  width: 20px;
+  height: 14px;
+  border-radius: 2px;
+  object-fit: cover;
+}
+
+.flag-icon-menu {
+  width: 18px;
+  height: 12px;
+  border-radius: 2px;
+  object-fit: cover;
 }
 
 .nav-drawer-button {
@@ -466,9 +622,26 @@ export default {
     font-size: 1rem;
   }
   
-  .lang-option {
+  .lang-dropdown-button {
     font-size: 0.9rem;
-    padding: 0.4rem 0.8rem;
+    padding: 0.3rem 0.6rem;
+    gap: 0.4rem;
+  }
+  
+  .lang-dropdown-item {
+    font-size: 0.8rem;
+    padding: 0.8rem 1.2rem;
+    gap: 0.6rem;
+  }
+  
+  .flag-icon {
+    width: 18px;
+    height: 12px;
+  }
+  
+  .flag-icon-menu {
+    width: 16px;
+    height: 11px;
   }
   
   .nav-main-item {
@@ -494,9 +667,26 @@ export default {
     gap: 0.25rem;
   }
   
-  .lang-option {
-    padding: 0.3rem 0.6rem;
+  .lang-dropdown-button {
+    padding: 0.2rem 0.4rem;
     font-size: 0.8rem;
+    gap: 0.3rem;
+  }
+  
+  .lang-dropdown-item {
+    padding: 0.7rem 1rem;
+    font-size: 0.7rem;
+    gap: 0.5rem;
+  }
+  
+  .flag-icon {
+    width: 16px;
+    height: 11px;
+  }
+  
+  .flag-icon-menu {
+    width: 14px;
+    height: 10px;
   }
   
   .main-content {
