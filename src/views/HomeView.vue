@@ -145,10 +145,10 @@ export default {
   computed: {
     ...mapGetters(['isDarkMode']),
     currentLogo() {
-      return this.isDarkMode ? '/logo_dark.png' : '/logo_light.svg'
+      return this.isDarkMode ? '/logo_dark.png' : '/logo_light.png'
     },
     currentBannerText() {
-      return this.isDarkMode ? '/banner_text_light.png' : '/banner_text_dark.svg'
+      return this.isDarkMode ? '/banner_text_light.png' : '/banner_text_dark.png'
     }
   },
     mounted() {

@@ -14,15 +14,15 @@
           <!-- Theme Switch -->
           <div class="theme-switch" @click="toggleTheme">
             <div class="theme-switch-container">
-              <div class="theme-switch-track" :class="{ 'dark': isDarkMode }">
-                <div class="theme-switch-thumb" :class="{ 'dark': isDarkMode }">
-                  <span class="theme-switch-icon">{{ isDarkMode ? '🌙' : '☀️' }}</span>
+                              <div class="theme-switch-track" :class="{ 'dark': isDarkMode }">
+                  <div class="theme-switch-thumb" :class="{ 'dark': isDarkMode }">
+                    <span class="theme-switch-icon">{{ isDarkMode ? '🌙' : '☀️' }}</span>
+                  </div>
+                  <div class="theme-switch-labels">
+                    <span class="theme-switch-label left" :class="{ 'hidden': !isDarkMode }">DARK</span>
+                    <span class="theme-switch-label right" :class="{ 'hidden': isDarkMode }">LIGHT</span>
+                  </div>
                 </div>
-                <div class="theme-switch-labels">
-                  <span class="theme-switch-label left" :class="{ 'active': !isDarkMode }">☀️</span>
-                  <span class="theme-switch-label right" :class="{ 'active': isDarkMode }">🌙</span>
-                </div>
-              </div>
             </div>
           </div>
           
@@ -117,7 +117,7 @@ export default {
   computed: {
     ...mapGetters(['isDarkMode', 'currentLanguage']),
     currentLogo() {
-      return this.isDarkMode ? '/logo_dark.png' : '/logo_light.svg'
+      return this.isDarkMode ? '/logo_dark.png' : '/logo_light.png'
     },
     currentLanguageFlag() {
       return this.currentLanguage === 'English' ? '/english.png' : '/serbian.png'
@@ -346,13 +346,14 @@ html {
 
 .theme-switch-track {
   position: relative;
-  width: 70px;
+  width: 100px;
   height: 32px;
   background-color: var(--bg-color);
   border: 2px solid var(--text-color);
   border-radius: 16px;
   transition: all 0.3s ease;
   overflow: hidden;
+  padding:10px;
 }
 
 .theme-switch-track:hover {
@@ -367,7 +368,7 @@ html {
   position: absolute;
   top: 2px;
   left: 2px;
-  width: 24px;
+  width: 46px;
   height: 24px;
   background-color: var(--text-color);
   border-radius: 12px;
@@ -379,12 +380,13 @@ html {
 }
 
 .theme-switch-thumb.dark {
-  transform: translateX(34px);
+  transform: translateX(50px);
   background-color: #f8f8f8;
+  color: #2a2a2a;
 }
 
 .theme-switch-icon {
-  font-size: 12px;
+  font-size: 14px;
   transition: all 0.3s ease;
 }
 
@@ -397,27 +399,30 @@ html {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 6px;
+  padding: 0 8px;
   pointer-events: none;
 }
 
 .theme-switch-label {
-  font-size: 12px;
-  opacity: 0.5;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--text-color);
+  opacity: 0.8;
   transition: all 0.3s ease;
   z-index: 5;
 }
 
-.theme-switch-label.active {
+.theme-switch-label.hidden {
   opacity: 0;
 }
 
 .theme-switch-label.left {
-  margin-left: 2px;
+  margin-left: 4px;
 }
 
 .theme-switch-label.right {
-  margin-right: 2px;
+  margin-right: 4px;
 }
 
 /* Language Dropdown */
