@@ -11,9 +11,20 @@
         
         <!-- Right Side: Theme Toggle, Languages, Nav Drawer -->
         <div class="nav-right">
-          <button class="theme-toggle" @click="toggleTheme" :aria-label="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'">
-            <span class="theme-icon">{{ isDarkMode ? '☀️' : '🌙' }}</span>
-          </button>
+          <!-- Theme Switch -->
+          <div class="theme-switch" @click="toggleTheme">
+            <div class="theme-switch-container">
+              <div class="theme-switch-track" :class="{ 'dark': isDarkMode }">
+                <div class="theme-switch-thumb" :class="{ 'dark': isDarkMode }">
+                  <span class="theme-switch-icon">{{ isDarkMode ? '🌙' : '☀️' }}</span>
+                </div>
+                <div class="theme-switch-labels">
+                  <span class="theme-switch-label left" :class="{ 'active': !isDarkMode }">☀️</span>
+                  <span class="theme-switch-label right" :class="{ 'active': isDarkMode }">🌙</span>
+                </div>
+              </div>
+            </div>
+          </div>
           
           <!-- Language Dropdown -->
           <div class="language-dropdown" @click.stop>
@@ -49,19 +60,35 @@
         <div class="nav-drawer-content">
           <nav class="main-nav">
             <router-link to="/" class="nav-main-item" @click="closeNavDrawer">
-              <span class="nav-text">Home</span>
+              <span class="nav-text">
+                <transition name="slide-text" mode="out-in">
+                  <span :key="currentLanguage + 'nav.home'">{{ $t('nav.home') }}</span>
+                </transition>
+              </span>
               <span class="nav-arrow">→</span>
             </router-link>
             <router-link to="/menu" class="nav-main-item" @click="closeNavDrawer">
-              <span class="nav-text">Menu</span>
+              <span class="nav-text">
+                <transition name="slide-text" mode="out-in">
+                  <span :key="currentLanguage + 'nav.menu'">{{ $t('nav.menu') }}</span>
+                </transition>
+              </span>
               <span class="nav-arrow">→</span>
             </router-link>
             <router-link to="/reservations" class="nav-main-item" @click="closeNavDrawer">
-              <span class="nav-text">Reservations</span>
+              <span class="nav-text">
+                <transition name="slide-text" mode="out-in">
+                  <span :key="currentLanguage + 'nav.reservations'">{{ $t('nav.reservations') }}</span>
+                </transition>
+              </span>
               <span class="nav-arrow">→</span>
             </router-link>
             <a href="#" class="nav-main-item" @click="scrollToLocation">
-              <span class="nav-text">Location</span>
+              <span class="nav-text">
+                <transition name="slide-text" mode="out-in">
+                  <span :key="currentLanguage + 'nav.location'">{{ $t('nav.location') }}</span>
+                </transition>
+              </span>
             </a>
           </nav>
         </div>
@@ -76,20 +103,21 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import translationMixin from '@/mixins/translationMixin'
 
 export default {
   name: 'App',
+  mixins: [translationMixin],
   data() {
     return {
       isNavDrawerOpen: false,
-      isLanguageDropdownOpen: false,
-      currentLanguage: 'English'
+      isLanguageDropdownOpen: false
     }
   },
   computed: {
-    ...mapGetters(['isDarkMode']),
+    ...mapGetters(['isDarkMode', 'currentLanguage']),
     currentLogo() {
-      return this.isDarkMode ? '/logo_dark.svg' : '/logo_light.svg'
+      return this.isDarkMode ? '/logo_dark.png' : '/logo_light.svg'
     },
     currentLanguageFlag() {
       return this.currentLanguage === 'English' ? '/english.png' : '/serbian.png'
@@ -107,10 +135,8 @@ export default {
       this.isLanguageDropdownOpen = !this.isLanguageDropdownOpen
     },
     selectLanguage(lang) {
-      this.currentLanguage = lang
+      this.$store.dispatch('setLanguage', lang)
       this.isLanguageDropdownOpen = false
-      // TODO: Implement actual language switching logic here
-      console.log('Language switched to:', lang)
     },
     scrollToLocation(event) {
       event.preventDefault();
@@ -143,6 +169,12 @@ export default {
     const savedTheme = localStorage.getItem('theme')
     if (savedTheme === 'dark') {
       this.$store.dispatch('setTheme', true)
+    }
+    
+    // Check for saved language preference
+    const savedLanguage = localStorage.getItem('language')
+    if (savedLanguage && ['English', 'Serbian'].includes(savedLanguage)) {
+      this.$store.dispatch('setLanguage', savedLanguage)
     }
     
     // Close dropdown when clicking outside
@@ -185,7 +217,8 @@ export default {
 }
 
 html {
-  scroll-snap-type: y mandatory;
+  scroll-snap-type: y proximity;
+  scroll-behavior: smooth;
 }
 
 /* Custom Scrollbar Styling */
@@ -212,7 +245,39 @@ html {
   scrollbar-color: #ca371c var(--bg-color);
 }
 
-#app {
+/* Smooth scroll behavior for slower, more controlled scrolling */
+* {
+  scroll-behavior: smooth;
+}
+
+/* Optional: Add some scroll padding for smoother snapping */
+html {
+  scroll-padding-top: 0px;
+  }
+
+/* Text slide animations */
+.slide-text-enter-active,
+.slide-text-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-text-enter-from {
+  opacity: 0;
+  transform: translateX(-20px);
+}
+
+.slide-text-leave-to {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+.slide-text-enter-to,
+.slide-text-leave-from {
+  opacity: 1;
+  transform: translateX(0);
+}
+  
+  #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -270,27 +335,89 @@ html {
   gap: 1rem;
 }
 
-.theme-toggle {
-  background: none;
-  border: 2px solid var(--text-color);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
+/* Theme Switch */
+.theme-switch {
   cursor: pointer;
-  color: var(--text-color);
-  transition: var(--transition);
+}
+
+.theme-switch-container {
+  position: relative;
+}
+
+.theme-switch-track {
+  position: relative;
+  width: 70px;
+  height: 32px;
+  background-color: var(--bg-color);
+  border: 2px solid var(--text-color);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.theme-switch-track:hover {
+  border-color: #ca371c;
+}
+
+.theme-switch-track.dark {
+  background-color: #2a2a2a;
+}
+
+.theme-switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 24px;
+  height: 24px;
+  background-color: var(--text-color);
+  border-radius: 12px;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 10;
 }
 
-.theme-toggle:hover {
-  background-color: var(--text-color);
-  color: var(--bg-color);
+.theme-switch-thumb.dark {
+  transform: translateX(34px);
+  background-color: #f8f8f8;
 }
 
-.theme-icon {
-  font-size: 1.2rem;
+.theme-switch-icon {
+  font-size: 12px;
+  transition: all 0.3s ease;
+}
+
+.theme-switch-labels {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6px;
+  pointer-events: none;
+}
+
+.theme-switch-label {
+  font-size: 12px;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+  z-index: 5;
+}
+
+.theme-switch-label.active {
+  opacity: 0;
+}
+
+.theme-switch-label.left {
+  margin-left: 2px;
+}
+
+.theme-switch-label.right {
+  margin-right: 2px;
 }
 
 /* Language Dropdown */

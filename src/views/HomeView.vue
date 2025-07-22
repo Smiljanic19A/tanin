@@ -30,9 +30,15 @@
         
         <!-- Restaurant Content -->
         <div class="restaurant-content">
-          <h2 class="restaurant-title">Best Wine selection in Belgrade</h2>
+          <h2 class="restaurant-title">
+            <transition name="slide-text" mode="out-in">
+              <span :key="currentLanguage + 'home.restaurantTitle'">{{ $t('home.restaurantTitle') }}</span>
+            </transition>
+          </h2>
           <p class="restaurant-description">
-            Dedicated to life's simple pleasures of eating and drinking well, Roma is a nod to regional Italian home cooking by Chef Luca Pezzera, served in a grand yet inviting space in the heart of Jakarta's SCBD. Drop by for an al fresco lunch with the most authentic Neapolitan pizza in town, made by world champion pizzaiolo Pasqualino Barbasso. A leisurely dinner should involve at least one of our many iterations of Cacio e Pepe, the sublime spaghetti carbonara or the trippa all'omana, accompanied by fantastic Italian wines. The bar is perfect for a spot of aperitivo as well as late night revelries: try the excellent Garibaldi, any of the classic and innovative Negronis, or any cocktails highlighting amaro and bitters.
+            <transition name="slide-text" mode="out-in">
+              <span :key="currentLanguage + 'home.restaurantDescription'">{{ $t('home.restaurantDescription') }}</span>
+            </transition>
           </p>
         </div>
       </div>
@@ -41,7 +47,7 @@
     <!-- Contact Information Section -->
     <section class="contact-section" id="location-section">
       <div class="contact-hero-image">
-        <img src="/banner_plate.svg" alt="Delicious Food" class="food-image">
+        <img src="/banner_plate.png" alt="Delicious Food" class="food-image">
         <div class="logo-overlay">
           <img :src="currentLogo" alt="Tanin Logo" class="overlay-logo">
         </div>
@@ -51,29 +57,73 @@
         <div class="contact-grid">
           <!-- Location Information -->
           <div class="contact-item location-info">
-            <h3 class="contact-title">Zorza klempansog 27v,<br>Belgrade</h3>
-            <p class="contact-link">Maps and directions</p>
+            <h3 class="contact-title">
+              <transition name="slide-text" mode="out-in">
+                <span :key="currentLanguage + 'home.contactAddress'" v-html="$t('home.contactAddress')"></span>
+              </transition>
+            </h3>
+            <p class="contact-link">
+              <transition name="slide-text" mode="out-in">
+                <span :key="currentLanguage + 'home.contactDirections'">{{ $t('home.contactDirections') }}</span>
+              </transition>
+            </p>
           </div>
           
           <!-- Opening Hours -->
           <div class="contact-item hours-info">
-            <h3 class="contact-title">Opening Hours:</h3>
-            <p class="hours-text">Tuesday - Sunday</p>
-            <p class="hours-time">12:00 pm - 01:00 am</p>
+            <h3 class="contact-title">
+              <transition name="slide-text" mode="out-in">
+                <span :key="currentLanguage + 'home.openingHours'">{{ $t('home.openingHours') }}</span>
+              </transition>
+            </h3>
+            <p class="hours-text">
+              <transition name="slide-text" mode="out-in">
+                <span :key="currentLanguage + 'home.openingDays'">{{ $t('home.openingDays') }}</span>
+              </transition>
+            </p>
+            <p class="hours-time">
+              <transition name="slide-text" mode="out-in">
+                <span :key="currentLanguage + 'home.openingTime'">{{ $t('home.openingTime') }}</span>
+              </transition>
+            </p>
           </div>
           
           <!-- Contact Information -->
           <div class="contact-item contact-details">
-            <h3 class="contact-title">Contact:</h3>
-            <p class="contact-text">Phone: 01123456788</p>
-            <p class="contact-text">WhatsApp: 01123412334</p>
+            <h3 class="contact-title">
+              <transition name="slide-text" mode="out-in">
+                <span :key="currentLanguage + 'home.contact'">{{ $t('home.contact') }}</span>
+              </transition>
+            </h3>
+            <p class="contact-text">
+              <transition name="slide-text" mode="out-in">
+                <span :key="currentLanguage + 'home.phone'">{{ $t('home.phone') }}</span>
+              </transition>
+            </p>
+            <p class="contact-text">
+              <transition name="slide-text" mode="out-in">
+                <span :key="currentLanguage + 'home.whatsapp'">{{ $t('home.whatsapp') }}</span>
+              </transition>
+            </p>
           </div>
           
           <!-- Additional Contact -->
           <div class="contact-item contact-details-alt">
-            <h3 class="contact-title">Contact:</h3>
-            <p class="contact-text">Phone: 01123456788</p>
-            <p class="contact-text">WhatsApp: 01123412334</p>
+            <h3 class="contact-title">
+              <transition name="slide-text" mode="out-in">
+                <span :key="currentLanguage + 'home.contact2'">{{ $t('home.contact') }}</span>
+              </transition>
+            </h3>
+            <p class="contact-text">
+              <transition name="slide-text" mode="out-in">
+                <span :key="currentLanguage + 'home.phone2'">{{ $t('home.phone') }}</span>
+              </transition>
+            </p>
+            <p class="contact-text">
+              <transition name="slide-text" mode="out-in">
+                <span :key="currentLanguage + 'home.whatsapp2'">{{ $t('home.whatsapp') }}</span>
+              </transition>
+            </p>
           </div>
         </div>
       </div>
@@ -84,22 +134,24 @@
 <script>
 import { mapGetters } from 'vuex'
 import WineSlider from '@/components/WineSlider.vue'
+import translationMixin from '@/mixins/translationMixin'
 
 export default {
   name: 'HomeView',
+  mixins: [translationMixin],
   components: {
     WineSlider
   },
   computed: {
     ...mapGetters(['isDarkMode']),
     currentLogo() {
-      return this.isDarkMode ? '/logo_dark.svg' : '/logo_light.svg'
+      return this.isDarkMode ? '/logo_dark.png' : '/logo_light.svg'
     },
     currentBannerText() {
-      return this.isDarkMode ? '/banner_text_light.svg' : '/banner_text_dark.svg'
+      return this.isDarkMode ? '/banner_text_light.png' : '/banner_text_dark.svg'
     }
   },
-  mounted() {
+    mounted() {
     // Ensure page loads at the top (logo section)
     window.scrollTo(0, 0)
   }

@@ -2,14 +2,18 @@
   <div class="reservations-view">
     <!-- Mobile background (hidden on desktop) -->
     <div class="mobile-background" v-if="isMobile">
-      <img src="/plate.svg" alt="Background" class="background-image">
+      <img src="/plate.png" alt="Background" class="background-image">
       <div class="background-overlay"></div>
     </div>
     
     <div class="reservations-layout">
       <!-- Reservations Content -->
       <div class="reservations-container">
-        <h1 class="reservations-title">RESERVATIONS</h1>
+        <h1 class="reservations-title">
+          <transition name="slide-text" mode="out-in">
+            <span :key="currentLanguage + 'reservations.title'">{{ $t('reservations.title') }}</span>
+          </transition>
+        </h1>
         
         <!-- Tab Navigation -->
         <div class="tab-navigation">
@@ -18,14 +22,18 @@
             :class="{ active: activeTab === 'booking' }"
             @click="activeTab = 'booking'"
           >
-            Book a Table
+            <transition name="slide-text" mode="out-in">
+              <span :key="currentLanguage + 'reservations.bookTable'">{{ $t('reservations.bookTable') }}</span>
+            </transition>
           </button>
           <button 
             class="tab-button" 
             :class="{ active: activeTab === 'private' }"
             @click="activeTab = 'private'"
           >
-            Private Reservations
+            <transition name="slide-text" mode="out-in">
+              <span :key="currentLanguage + 'reservations.privateReservations'">{{ $t('reservations.privateReservations') }}</span>
+            </transition>
           </button>
         </div>
         
@@ -33,8 +41,16 @@
         <div class="tab-content">
           <!-- Book a Table Tab -->
           <div v-if="activeTab === 'booking'" class="booking-tab">
-            <h2 class="tab-title">Book a Table</h2>
-            <p class="tab-description">Select a date to check availability</p>
+            <h2 class="tab-title">
+              <transition name="slide-text" mode="out-in">
+                <span :key="currentLanguage + 'reservations.bookTable2'">{{ $t('reservations.bookTable') }}</span>
+              </transition>
+            </h2>
+            <p class="tab-description">
+              <transition name="slide-text" mode="out-in">
+                <span :key="currentLanguage + 'reservations.selectDate'">{{ $t('reservations.selectDate') }}</span>
+              </transition>
+            </p>
             
             <!-- Desktop Layout: Calendar + Form Side by Side -->
             <div class="booking-content">
@@ -68,51 +84,40 @@
               
               <!-- Booking Form -->
               <div v-if="selectedDate" class="booking-form">
-                <h4 class="form-title">Selected Date: {{ formatSelectedDate }}</h4>
+                <h4 class="form-title">{{ $t('reservations.selectedDate') }} {{ formatSelectedDate }}</h4>
                 <form @submit.prevent="submitBooking">
                   <div class="form-group">
-                    <label for="guests">Number of Guests:</label>
+                    <label for="guests">{{ $t('reservations.numberOfGuests') }}</label>
                     <select id="guests" v-model="bookingForm.guests" required>
-                      <option value="">Select guests</option>
+                      <option value="">{{ $t('reservations.selectGuests') }}</option>
                       <option v-for="n in 10" :key="n" :value="n">{{ n }} guest{{ n > 1 ? 's' : '' }}</option>
                     </select>
                   </div>
                   
                   <div class="form-group">
-                    <label for="time">Preferred Time:</label>
+                    <label for="time">{{ $t('reservations.preferredTime') }}</label>
                     <select id="time" v-model="bookingForm.time" required>
-                      <option value="">Select time</option>
-                      <option value="12:00">12:00 PM</option>
-                      <option value="12:30">12:30 PM</option>
-                      <option value="13:00">1:00 PM</option>
-                      <option value="13:30">1:30 PM</option>
-                      <option value="14:00">2:00 PM</option>
-                      <option value="19:00">7:00 PM</option>
-                      <option value="19:30">7:30 PM</option>
-                      <option value="20:00">8:00 PM</option>
-                      <option value="20:30">8:30 PM</option>
-                      <option value="21:00">9:00 PM</option>
-                      <option value="21:30">9:30 PM</option>
-                      <option value="22:00">10:00 PM</option>
+                      <option value="">{{ $t('reservations.selectTime') }}</option>
+                      <option v-for="(label, time) in $t('reservations.timeSlots')" :key="time" :value="time">{{ label }}</option>
                     </select>
                   </div>
                   
                   <div class="form-group">
-                    <label for="name">Name:</label>
+                    <label for="name">{{ $t('reservations.name') }}</label>
                     <input type="text" id="name" v-model="bookingForm.name" required>
                   </div>
                   
                   <div class="form-group">
-                    <label for="phone">Phone:</label>
+                    <label for="phone">{{ $t('reservations.phone') }}</label>
                     <input type="tel" id="phone" v-model="bookingForm.phone" required>
                   </div>
                   
                   <div class="form-group">
-                    <label for="email">Email:</label>
+                    <label for="email">{{ $t('reservations.email') }}</label>
                     <input type="email" id="email" v-model="bookingForm.email" required>
                   </div>
                   
-                  <button type="submit" class="submit-button">Book Table</button>
+                  <button type="submit" class="submit-button">{{ $t('reservations.bookTableButton') }}</button>
                 </form>
               </div>
             </div>
@@ -120,8 +125,16 @@
           
           <!-- Private Reservations Tab -->
           <div v-if="activeTab === 'private'" class="private-tab">
-            <h2 class="tab-title">Private Reservations</h2>
-            <p class="tab-description">Planning a special event? Contact us for private dining and event arrangements.</p>
+            <h2 class="tab-title">
+              <transition name="slide-text" mode="out-in">
+                <span :key="currentLanguage + 'reservations.privateTitle'">{{ $t('reservations.privateTitle') }}</span>
+              </transition>
+            </h2>
+            <p class="tab-description">
+              <transition name="slide-text" mode="out-in">
+                <span :key="currentLanguage + 'reservations.privateDescription'">{{ $t('reservations.privateDescription') }}</span>
+              </transition>
+            </p>
             
             <form @submit.prevent="submitPrivateReservation" class="private-form">
               <div class="form-row">
@@ -189,9 +202,11 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import translationMixin from '@/mixins/translationMixin'
 
 export default {
   name: 'ReservationsView',
+  mixins: [translationMixin],
   data() {
     return {
       activeTab: 'booking',
@@ -234,8 +249,9 @@ export default {
       return window.innerWidth <= 768;
     },
     currentMonthYear() {
-      const options = { year: 'numeric', month: 'long' };
-      return this.currentDate.toLocaleDateString('en-US', options);
+      const monthNames = this.$t('reservations.months');
+      const month = monthNames[Object.keys(monthNames)[this.currentDate.getMonth()]];
+      return `${month} ${this.currentDate.getFullYear()}`;
     },
     formatSelectedDate() {
       if (!this.selectedDate) return '';

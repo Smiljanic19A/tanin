@@ -2,31 +2,47 @@
   <div class="menu-view">
     <!-- Mobile background (hidden on desktop) -->
     <div class="mobile-background" v-if="isMobile">
-      <img src="/plate.svg" alt="Background" class="background-image">
+      <img src="/plate.png" alt="Background" class="background-image">
       <div class="background-overlay"></div>
     </div>
     
     <div class="menu-layout">
       <!-- Left side - Plate Image (desktop only) -->
       <div class="plate-container">
-        <img src="/plate.svg" alt="Food Plate" class="plate-image">
+        <img src="/plate.png" alt="Food Plate" class="plate-image">
       </div>
       
       <!-- Right side - Menu Content -->
       <div class="menu-container">
-        <h1 class="menu-title">MENU</h1>
+        <h1 class="menu-title">
+          <transition name="slide-text" mode="out-in">
+            <span :key="currentLanguage + 'menu.title'">{{ $t('menu.title') }}</span>
+          </transition>
+        </h1>
         
         <div class="menu-buttons">
           <button class="menu-button" @click="openWineCard">
-            <span class="button-text">Wine Card</span>
+            <span class="button-text">
+              <transition name="slide-text" mode="out-in">
+                <span :key="currentLanguage + 'menu.wineCard'">{{ $t('menu.wineCard') }}</span>
+              </transition>
+            </span>
           </button>
           
           <button class="menu-button" @click="openDiningMenu">
-            <span class="button-text">Dining Menu</span>
+            <span class="button-text">
+              <transition name="slide-text" mode="out-in">
+                <span :key="currentLanguage + 'menu.diningMenu'">{{ $t('menu.diningMenu') }}</span>
+              </transition>
+            </span>
           </button>
           
           <button class="menu-button" @click="openCocktailCard">
-            <span class="button-text">Cocktail Card</span>
+            <span class="button-text">
+              <transition name="slide-text" mode="out-in">
+                <span :key="currentLanguage + 'menu.cocktailCard'">{{ $t('menu.cocktailCard') }}</span>
+              </transition>
+            </span>
           </button>
         </div>
       </div>
@@ -36,9 +52,11 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import translationMixin from '@/mixins/translationMixin'
 
 export default {
   name: 'MenuView',
+  mixins: [translationMixin],
   computed: {
     ...mapGetters(['isDarkMode']),
     isMobile() {

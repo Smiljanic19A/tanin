@@ -1,0 +1,93 @@
+{
+  "nav": {
+    "home": "Početna",
+    "menu": "Meni",
+    "reservations": "Rezervacije",
+    "location": "Lokacija"
+  },
+  "home": {
+    "restaurantTitle": "Najbolji izbor vina u Beogradu",
+    "restaurantDescription": "Posvećen jednostavnim životnim užicima dobrog jela i pića, Roma je poštovanje regionalnoj italijanskoj domaćoj kuhinji šefa Luka Pezzere, serviranoj u veličanstvenom ali privlačnom prostoru u srcu SCBD-a u Džakarti. Dođite na ručak na otvorenom sa najautentičnijom napuljskom pizzom u gradu, koju pravi svetski šampion pizzaiolo Pasqualino Barbasso. Opuštena večera treba da uključi bar jednu od naših mnogih varijanti Cacio e Pepe, uzvišene spaghetti carbonara ili trippa all'omana, uz fantastična italijanska vina. Bar je savršen za aperitiv kao i za kasno noćno veselje: probajte odličan Garibaldi, bilo koji od klasičnih i inovativnih Negroni-ja, ili bilo koji koktel koji ističe amaro i bitters.",
+    "contactAddress": "Zorza klempansog 27v,<br>Beograd",
+    "contactDirections": "Mapa i uputstva",
+    "openingHours": "Radno vreme:",
+    "openingDays": "Utorak - Nedelja",
+    "openingTime": "12:00 - 01:00",
+    "contact": "Kontakt:",
+    "phone": "Telefon: 01123456788",
+    "whatsapp": "WhatsApp: 01123412334"
+  },
+  "menu": {
+    "title": "MENI",
+    "wineCard": "Vinska Karta",
+    "diningMenu": "Meni Jela",
+    "cocktailCard": "Koktel Karta"
+  },
+  "reservations": {
+    "title": "REZERVACIJE",
+    "bookTable": "Rezerviši Sto",
+    "privateReservations": "Privatne Rezervacije",
+    "selectDate": "Izaberite datum da proverite dostupnost",
+    "selectedDate": "Izabrani datum:",
+    "numberOfGuests": "Broj gostiju:",
+    "selectGuests": "Izaberite goste",
+    "preferredTime": "Željeno vreme:",
+    "selectTime": "Izaberite vreme",
+    "name": "Ime:",
+    "phone": "Telefon:",
+    "email": "Email:",
+    "bookTableButton": "Rezerviši Sto",
+    "privateTitle": "Privatne Rezervacije",
+    "privateDescription": "Planirate specijalan događaj? Kontaktirajte nas za privatne obedovanja i organizaciju događaja.",
+    "preferredDate": "Željeni datum",
+    "eventType": "Tip događaja",
+    "selectEventType": "Izaberite tip događaja",
+    "eventTypes": {
+      "birthday": "Rođendanska zabava",
+      "anniversary": "Godišnjica",
+      "corporate": "Korporativni događaj",
+      "wedding": "Svadba",
+      "other": "Ostalo"
+    },
+    "expectedGuests": "Očekivani broj gostiju",
+    "budgetRange": "Budžet",
+    "selectBudgetRange": "Izaberite budžet",
+    "budgetRanges": {
+      "under2000": "Ispod 2.000€",
+      "2000to5000": "2.000€ - 5.000€",
+      "5000to10000": "5.000€ - 10.000€",
+      "over10000": "Preko 10.000€"
+    },
+    "specialRequests": "Posebni zahtevi / Poruka",
+    "specialRequestsPlaceholder": "Recite nam o vašem događaju, posebnim dijetalnim zahtevima, preferencijama za dekoraciju ili bilo kojim drugim detaljima...",
+    "sendInquiry": "Pošaljite upit",
+    "months": {
+      "january": "Januar",
+      "february": "Februar",
+      "march": "Mart",
+      "april": "April",
+      "may": "Maj",
+      "june": "Jun",
+      "july": "Jul",
+      "august": "Avgust",
+      "september": "Septembar",
+      "october": "Oktobar",
+      "november": "Novembar",
+      "december": "Decembar"
+    },
+    "timeSlots": {
+      "12:00": "12:00",
+      "12:30": "12:30",
+      "13:00": "13:00",
+      "13:30": "13:30",
+      "14:00": "14:00",
+      "19:00": "19:00",
+      "19:30": "19:30",
+      "20:00": "20:00",
+      "20:30": "20:30",
+      "21:00": "21:00",
+      "21:30": "21:30",
+      "22:00": "22:00"
+    }
+  }
+} 
