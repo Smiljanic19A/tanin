@@ -29,7 +29,18 @@
     <div class="nav-drawer-overlay" :class="{ 'open': isNavDrawerOpen }" @click="closeNavDrawer">
       <div class="nav-drawer" :class="{ 'open': isNavDrawerOpen }" @click.stop>
         <div class="nav-drawer-content">
-          <h2>This is the navigation</h2>
+          <nav class="main-nav">
+            <a href="#" class="nav-main-item" @click="closeNavDrawer">
+              <span class="nav-text">Menu</span>
+            
+            </a>
+            <a href="#" class="nav-main-item" @click="closeNavDrawer">
+              <span class="nav-text">Reservations</span>
+            </a>
+            <a href="#" class="nav-main-item" @click="closeNavDrawer">
+              <span class="nav-text">Location</span>
+            </a>
+          </nav>
         </div>
       </div>
     </div>
@@ -318,6 +329,68 @@ export default {
   text-align: center;
 }
 
+.main-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 3rem;
+}
+
+.nav-main-item {
+  text-decoration: none;
+  color: var(--text-color);
+  font-size: 4rem;
+  font-weight: 300;
+  text-align: left;
+  transition: all 0.4s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+}
+
+.nav-main-item:hover {
+  transform: translateY(-5px);
+  color: #ca371c;
+}
+
+.nav-main-item:hover .nav-text {
+  transform: scale(1.05);
+}
+
+.nav-text {
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.nav-text::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #ca371c;
+  transition: width 0.3s ease;
+}
+
+.nav-main-item:hover .nav-text::after {
+  width: 100%;
+}
+
+.nav-arrow {
+  font-size: 3rem;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+
+.nav-main-item:hover .nav-arrow {
+  transform: translateX(10px);
+  opacity: 1;
+}
+
 .main-content {
   margin-top: 70px; /* Account for fixed navbar */
   min-height: calc(100vh - 70px);
@@ -355,6 +428,14 @@ export default {
     font-size: 0.9rem;
     padding: 0.4rem 0.8rem;
   }
+  
+  .nav-main-item {
+    font-size: 3rem;
+  }
+  
+  .nav-arrow {
+    font-size: 2.5rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -382,6 +463,22 @@ export default {
   
   .navbar {
     padding: 0.5rem 0;
+  }
+  
+  .nav-logo-small {
+    height: 28px;
+  }
+  
+  .nav-main-item {
+    font-size: 2.5rem;
+  }
+  
+  .nav-arrow {
+    font-size: 2rem;
+  }
+  
+  .main-nav {
+    gap: 2.5rem;
   }
 }
 </style>
