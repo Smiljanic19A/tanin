@@ -281,12 +281,10 @@ export default {
       this.startAutoSlide();
     },
     
-    async viewMenu(type) {
-      const slide = this.slides.find(s => s.type === type);
-      if (!slide) return;
-      
-      await this.handleDownload(type, slide.filename, type);
-    },
+          async viewMenu(type) {
+        // Open the local PDF file in a new tab
+        window.open('/example.pdf', '_blank');
+      },
     
     async handleDownload(type, filename, displayName) {
       this.downloadStates[type] = true;
