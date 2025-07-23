@@ -113,7 +113,8 @@
       "time": "Time",
       "selectTime": "Select time",
       "howManyPeople": "How many people ?",
-      "comingSoon": "Coming soon..."
+      "comingSoon": "Coming soon...",
+      "submitButton": "Book Table"
     },
     "datePicker": {
       "selectDate": "Select Date",
@@ -130,6 +131,7 @@
       "selectBudget": "Select budget range",
       "peopleRange": "Number of People",
       "selectPeopleRange": "Select people range",
+      "submitButton": "Send Inquiry",
       "eventTypes": {
         "birthday": "Birthday Party",
         "anniversary": "Anniversary",

@@ -104,7 +104,8 @@
       "time": "Vreme",
       "selectTime": "Izaberite vreme",
       "howManyPeople": "Koliko ljudi ?",
-      "comingSoon": "Uskoro..."
+      "comingSoon": "Uskoro...",
+      "submitButton": "Rezerviši Sto"
     },
     "datePicker": {
       "selectDate": "Izaberite Datum",
@@ -121,6 +122,7 @@
       "selectBudget": "Izaberite budžet",
       "peopleRange": "Broj Ljudi",
       "selectPeopleRange": "Izaberite broj ljudi",
+      "submitButton": "Pošaljite Upit",
       "eventTypes": {
         "birthday": "Rođendanska Zabava",
         "anniversary": "Godišnjica",

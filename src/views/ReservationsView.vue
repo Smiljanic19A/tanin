@@ -88,6 +88,15 @@
                    <button type="button" class="counter-btn" @click="incrementGuests">+</button>
                  </div>
                </div>
+               
+               <!-- Submit Button -->
+               <div class="form-group submit-group">
+                 <button type="submit" class="submit-btn">
+                   <transition name="slide-text" mode="out-in">
+                     <span :key="currentLanguage + 'reservations.bookingForm.submitButton'">{{ $t('reservations.bookingForm.submitButton') }}</span>
+                   </transition>
+                 </button>
+               </div>
             </div>
           </div>
           
@@ -185,6 +194,15 @@
                   :placeholder="$t('reservations.privateForm.messagePlaceholder')"
                   rows="4"
                 ></textarea>
+              </div>
+              
+              <!-- Submit Button -->
+              <div class="form-group submit-group">
+                <button type="submit" class="submit-btn">
+                  <transition name="slide-text" mode="out-in">
+                    <span :key="currentLanguage + 'reservations.privateForm.submitButton'">{{ $t('reservations.privateForm.submitButton') }}</span>
+                  </transition>
+                </button>
               </div>
             </div>
           </div>
@@ -467,6 +485,12 @@ export default {
   text-align: center;
   width: 100%;
 }
+.private-tab {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+}
 
 .tab-navigation {
   display: flex;
@@ -708,6 +732,35 @@ export default {
 .message-input:focus {
   outline: none;
   border-color: #ca371c;
+}
+
+.submit-group {
+  justify-content: center;
+  padding: 3rem 0 1rem 0;
+}
+
+.submit-btn {
+  background-color: #ca371c;
+  color: white;
+  border: none;
+  padding: 1rem 3rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.submit-btn:hover {
+  background-color: #b52f16;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(202, 55, 28, 0.3);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
 }
 
 .coming-soon {
@@ -1075,6 +1128,18 @@ export default {
   
   .message-input:focus {
     border-color: #ca371c;
+  }
+  
+  .submit-btn {
+    background-color: #ca371c;
+    color: white;
+    padding: 1.2rem 3rem;
+    font-size: 1rem;
+  }
+  
+  .submit-btn:hover {
+    background-color: #b52f16;
+    transform: translateY(-1px);
   }
   
   .coming-soon {
