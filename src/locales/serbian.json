@@ -109,6 +109,38 @@
     "datePicker": {
       "selectDate": "Izaberite Datum",
       "dayHeaders": ["Ned", "Pon", "Uto", "Sre", "Čet", "Pet", "Sub"]
+    },
+    "privateForm": {
+      "mainTitle": "PRIVATNE REZERVACIJE",
+      "email": "Kontakt Email",
+      "eventType": "Tip Događaja",
+      "selectEventType": "Izaberite tip događaja",
+      "message": "Poruka",
+      "messagePlaceholder": "Recite nam o vašem događaju, posebnim zahtevima ili bilo kojim drugim detaljima...",
+      "budget": "Budžet",
+      "selectBudget": "Izaberite budžet",
+      "peopleRange": "Broj Ljudi",
+      "selectPeopleRange": "Izaberite broj ljudi",
+      "eventTypes": {
+        "birthday": "Rođendanska Zabava",
+        "anniversary": "Godišnjica",
+        "corporate": "Korporativni Događaj",
+        "wedding": "Svadba",
+        "other": "Ostalo"
+      },
+      "budgetRanges": {
+        "under1000": "≤ €1.000",
+        "1000to3000": "€1.000 - €3.000",
+        "3000to5000": "€3.000 - €5.000",
+        "5000to10000": "€5.000 - €10.000",
+        "over10000": "Preko €10.000"
+      },
+      "peopleRanges": {
+        "under10": "≤ 10 ljudi",
+        "10to30": "10 - 30 ljudi",
+        "30to50": "30 - 50 ljudi",
+        "over50": "50+ ljudi"
+      }
     }
   }
 } 

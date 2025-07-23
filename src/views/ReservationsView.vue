@@ -95,14 +95,98 @@
           <div v-if="activeTab === 'private'" class="private-tab">
             <h2 class="main-title">
               <transition name="slide-text" mode="out-in">
-                <span :key="currentLanguage + 'reservations.privateReservations'">{{ $t('reservations.privateReservations') }}</span>
+                <span :key="currentLanguage + 'reservations.privateForm.mainTitle'">{{ $t('reservations.privateForm.mainTitle') }}</span>
               </transition>
             </h2>
-            <p class="coming-soon">
-              <transition name="slide-text" mode="out-in">
-                <span :key="currentLanguage + 'reservations.bookingForm.comingSoon'">{{ $t('reservations.bookingForm.comingSoon') }}</span>
-              </transition>
-            </p>
+            
+            <div class="booking-form">
+              <!-- Date Selection -->
+              <div class="form-group">
+                <label>
+                  <transition name="slide-text" mode="out-in">
+                    <span :key="currentLanguage + 'reservations.bookingForm.date'">{{ $t('reservations.bookingForm.date') }}</span>
+                  </transition>
+                </label>
+                <div class="date-input-container" @click="showDatePicker = true">
+                  <span class="date-display">{{ formatPrivateDisplayDate }}</span>
+                </div>
+              </div>
+              
+              <!-- Contact Email -->
+              <div class="form-group">
+                <label>
+                  <transition name="slide-text" mode="out-in">
+                    <span :key="currentLanguage + 'reservations.privateForm.email'">{{ $t('reservations.privateForm.email') }}</span>
+                  </transition>
+                </label>
+                <input 
+                  v-model="privateForm.email" 
+                  type="email" 
+                  class="text-input"
+                  :placeholder="$t('reservations.privateForm.email')"
+                />
+              </div>
+              
+              <!-- Event Type -->
+              <div class="form-group">
+                <label>
+                  <transition name="slide-text" mode="out-in">
+                    <span :key="currentLanguage + 'reservations.privateForm.eventType'">{{ $t('reservations.privateForm.eventType') }}</span>
+                  </transition>
+                </label>
+                <select v-model="privateForm.eventType" class="time-select">
+                  <option value="">{{ $t('reservations.privateForm.selectEventType') }}</option>
+                  <option v-for="eventType in eventTypes" :key="eventType.value" :value="eventType.value">
+                    {{ eventType.label }}
+                  </option>
+                </select>
+              </div>
+              
+              <!-- Number of People -->
+              <div class="form-group">
+                <label>
+                  <transition name="slide-text" mode="out-in">
+                    <span :key="currentLanguage + 'reservations.privateForm.peopleRange'">{{ $t('reservations.privateForm.peopleRange') }}</span>
+                  </transition>
+                </label>
+                <select v-model="privateForm.peopleRange" class="time-select">
+                  <option value="">{{ $t('reservations.privateForm.selectPeopleRange') }}</option>
+                  <option v-for="peopleRange in peopleRanges" :key="peopleRange.value" :value="peopleRange.value">
+                    {{ peopleRange.label }}
+                  </option>
+                </select>
+              </div>
+              
+              <!-- Budget -->
+              <div class="form-group">
+                <label>
+                  <transition name="slide-text" mode="out-in">
+                    <span :key="currentLanguage + 'reservations.privateForm.budget'">{{ $t('reservations.privateForm.budget') }}</span>
+                  </transition>
+                </label>
+                <select v-model="privateForm.budget" class="time-select">
+                  <option value="">{{ $t('reservations.privateForm.selectBudget') }}</option>
+                  <option v-for="budgetRange in budgetRanges" :key="budgetRange.value" :value="budgetRange.value">
+                    {{ budgetRange.label }}
+                  </option>
+                </select>
+              </div>
+              
+              <!-- Message -->
+              <div class="form-group message-group">
+                <label>
+                  <transition name="slide-text" mode="out-in">
+                    <span :key="currentLanguage + 'reservations.privateForm.message'">{{ $t('reservations.privateForm.message') }}</span>
+                  </transition>
+                </label>
+                <textarea 
+                  v-model="privateForm.message" 
+                  class="message-input"
+                  :placeholder="$t('reservations.privateForm.messagePlaceholder')"
+                  rows="4"
+                ></textarea>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -183,6 +267,14 @@ export default {
         name: '',
         phone: '',
         email: ''
+      },
+      privateForm: {
+        date: new Date(2025, 1, 20), // Default to Feb 20, 2025
+        email: '',
+        eventType: '',
+        message: '',
+        budget: '',
+        peopleRange: ''
       }
     }
   },
@@ -210,6 +302,32 @@ export default {
         value: slot,
         label: this.$t(`reservations.timeSlots.${slot}`)
       }));
+    },
+    eventTypes() {
+      const types = ['birthday', 'anniversary', 'corporate', 'wedding', 'other'];
+      return types.map(type => ({
+        value: type,
+        label: this.$t(`reservations.privateForm.eventTypes.${type}`)
+      }));
+    },
+    budgetRanges() {
+      const ranges = ['under1000', '1000to3000', '3000to5000', '5000to10000', 'over10000'];
+      return ranges.map(range => ({
+        value: range,
+        label: this.$t(`reservations.privateForm.budgetRanges.${range}`)
+      }));
+    },
+    peopleRanges() {
+      const ranges = ['under10', '10to30', '30to50', 'over50'];
+      return ranges.map(range => ({
+        value: range,
+        label: this.$t(`reservations.privateForm.peopleRanges.${range}`)
+      }));
+    },
+    formatPrivateDisplayDate() {
+      if (!this.privateForm.date) return this.$t('reservations.selectDate');
+      const options = { day: 'numeric', month: 'short', year: 'numeric' };
+      return this.privateForm.date.toLocaleDateString('en-GB', options);
     },
     calendarDates() {
       const year = this.currentDate.getFullYear();
@@ -281,7 +399,11 @@ export default {
     },
     selectDate(dateObj) {
       if (!dateObj.isCurrentMonth || dateObj.isBooked || dateObj.isPast) return;
-      this.selectedDate = dateObj.date;
+      if (this.activeTab === 'booking') {
+        this.selectedDate = dateObj.date;
+      } else if (this.activeTab === 'private') {
+        this.privateForm.date = dateObj.date;
+      }
       this.showDatePicker = false;
     },
     closeDatePicker() {
@@ -390,6 +512,8 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  min-height: 500px;
+  overflow-y: auto;
 }
 
 .main-title {
@@ -528,6 +652,62 @@ export default {
   color: var(--text-color);
   flex: 1;
   text-align: center;
+}
+
+.text-input {
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: var(--text-color);
+  font-size: 1.2rem;
+  cursor: text;
+  transition: all 0.3s ease;
+  flex: 2;
+  text-align: right;
+  line-height: 1.5;
+  outline: none;
+}
+
+.text-input::placeholder {
+  color: var(--text-color);
+  opacity: 0.5;
+}
+
+.message-group {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.message-group label {
+  text-align: left;
+  flex: none;
+  width: 100%;
+}
+
+.message-input {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid var(--text-color);
+  background-color: transparent;
+  color: var(--text-color);
+  font-size: 1rem;
+  line-height: 1.5;
+  resize: vertical;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  border-radius: 8px;
+  min-height: 120px;
+}
+
+.message-input::placeholder {
+  color: var(--text-color);
+  opacity: 0.5;
+}
+
+.message-input:focus {
+  outline: none;
+  border-color: #ca371c;
 }
 
 .coming-soon {
@@ -870,6 +1050,31 @@ export default {
   .guest-count {
     color: var(--text-color);
     font-size: 1.4rem;
+  }
+  
+  .text-input {
+    color: var(--text-color);
+    font-size: 1.1rem;
+  }
+  
+  .text-input::placeholder {
+    color: var(--text-color);
+    opacity: 0.5;
+  }
+  
+  .message-input {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border-color: var(--text-color);
+  }
+  
+  .message-input::placeholder {
+    color: var(--text-color);
+    opacity: 0.5;
+  }
+  
+  .message-input:focus {
+    border-color: #ca371c;
   }
   
   .coming-soon {
