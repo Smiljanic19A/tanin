@@ -41,12 +41,20 @@
         <div class="tab-content">
           <!-- Book a Table Tab -->
           <div v-if="activeTab === 'booking'" class="booking-tab">
-            <h2 class="main-title">BOOK A TABLE</h2>
+            <h2 class="main-title">
+              <transition name="slide-text" mode="out-in">
+                <span :key="currentLanguage + 'reservations.bookingForm.mainTitle'">{{ $t('reservations.bookingForm.mainTitle') }}</span>
+              </transition>
+            </h2>
             
             <div class="booking-form">
               <!-- Date Selection -->
               <div class="form-group">
-                <label>Date</label>
+                <label>
+                  <transition name="slide-text" mode="out-in">
+                    <span :key="currentLanguage + 'reservations.bookingForm.date'">{{ $t('reservations.bookingForm.date') }}</span>
+                  </transition>
+                </label>
                 <div class="date-input-container" @click="showDatePicker = true">
                   <span class="date-display">{{ formatDisplayDate }}</span>
                 </div>
@@ -54,24 +62,36 @@
               
               <!-- Time Selection -->
               <div class="form-group">
-                <label>Time</label>
+                <label>
+                  <transition name="slide-text" mode="out-in">
+                    <span :key="currentLanguage + 'reservations.bookingForm.time'">{{ $t('reservations.bookingForm.time') }}</span>
+                  </transition>
+                </label>
                 <select v-model="bookingForm.time" class="time-select">
-                  <option value="">Select time</option>
-                  <option value="18:00">6:00 PM</option>
-                  <option value="18:30">6:30 PM</option>
-                  <option value="19:00">7:00 PM</option>
-                  <option value="19:30">7:30 PM</option>
-                  <option value="20:00">8:00 PM</option>
-                  <option value="20:30">8:30 PM</option>
-                  <option value="21:00">9:00 PM</option>
-                  <option value="21:30">9:30 PM</option>
-                  <option value="22:00">10:00 PM</option>
+                  <option value="">
+                    <transition name="slide-text" mode="out-in">
+                      <span :key="currentLanguage + 'reservations.bookingForm.selectTime'">{{ $t('reservations.bookingForm.selectTime') }}</span>
+                    </transition>
+                  </option>
+                  <option value="18:00">{{ $t('reservations.timeSlots.18:00') }}</option>
+                  <option value="18:30">{{ $t('reservations.timeSlots.18:30') }}</option>
+                  <option value="19:00">{{ $t('reservations.timeSlots.19:00') }}</option>
+                  <option value="19:30">{{ $t('reservations.timeSlots.19:30') }}</option>
+                  <option value="20:00">{{ $t('reservations.timeSlots.20:00') }}</option>
+                  <option value="20:30">{{ $t('reservations.timeSlots.20:30') }}</option>
+                  <option value="21:00">{{ $t('reservations.timeSlots.21:00') }}</option>
+                  <option value="21:30">{{ $t('reservations.timeSlots.21:30') }}</option>
+                  <option value="22:00">{{ $t('reservations.timeSlots.22:00') }}</option>
                 </select>
               </div>
               
                              <!-- Guest Counter -->
                <div class="form-group">
-                 <label>How many people ?</label>
+                 <label>
+                   <transition name="slide-text" mode="out-in">
+                     <span :key="currentLanguage + 'reservations.bookingForm.howManyPeople'">{{ $t('reservations.bookingForm.howManyPeople') }}</span>
+                   </transition>
+                 </label>
                  <div class="guest-counter">
                    <button type="button" class="counter-btn" @click="decrementGuests">-</button>
                    <span class="guest-count">{{ guestCount }}</span>
@@ -83,8 +103,16 @@
           
           <!-- Private Reservations Tab -->
           <div v-if="activeTab === 'private'" class="private-tab">
-            <h2 class="main-title">PRIVATE RESERVATIONS</h2>
-            <p class="coming-soon">Coming soon...</p>
+            <h2 class="main-title">
+              <transition name="slide-text" mode="out-in">
+                <span :key="currentLanguage + 'reservations.privateReservations'">{{ $t('reservations.privateReservations') }}</span>
+              </transition>
+            </h2>
+            <p class="coming-soon">
+              <transition name="slide-text" mode="out-in">
+                <span :key="currentLanguage + 'reservations.bookingForm.comingSoon'">{{ $t('reservations.bookingForm.comingSoon') }}</span>
+              </transition>
+            </p>
           </div>
         </div>
       </div>
@@ -94,7 +122,11 @@
     <div v-if="showDatePicker" class="date-picker-overlay" @click="closeDatePicker">
       <div class="date-picker-popup" @click.stop>
         <div class="date-picker-header">
-          <h3>Select Date</h3>
+          <h3>
+            <transition name="slide-text" mode="out-in">
+              <span :key="currentLanguage + 'reservations.datePicker.selectDate'">{{ $t('reservations.datePicker.selectDate') }}</span>
+            </transition>
+          </h3>
           <button class="close-btn" @click="closeDatePicker">×</button>
         </div>
         
@@ -106,7 +138,7 @@
           </div>
           
           <div class="calendar-grid">
-            <div class="day-header" v-for="day in dayHeaders" :key="day">{{ day }}</div>
+            <div class="day-header" v-for="(day, index) in translatedDayHeaders" :key="index">{{ day }}</div>
             <div 
               v-for="date in calendarDates" 
               :key="date.key"

@@ -88,6 +88,8 @@
       "13:00": "13:00",
       "13:30": "13:30",
       "14:00": "14:00",
+      "18:00": "18:00",
+      "18:30": "18:30",
       "19:00": "19:00",
       "19:30": "19:30",
       "20:00": "20:00",
@@ -95,6 +97,18 @@
       "21:00": "21:00",
       "21:30": "21:30",
       "22:00": "22:00"
+    },
+    "bookingForm": {
+      "mainTitle": "REZERVIŠI STO",
+      "date": "Datum",
+      "time": "Vreme",
+      "selectTime": "Izaberite vreme",
+      "howManyPeople": "Koliko ljudi ?",
+      "comingSoon": "Uskoro..."
+    },
+    "datePicker": {
+      "selectDate": "Izaberite Datum",
+      "dayHeaders": ["Ned", "Pon", "Uto", "Sre", "Čet", "Pet", "Sub"]
     }
   }
 } 

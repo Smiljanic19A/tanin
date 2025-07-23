@@ -97,6 +97,8 @@
       "13:00": "1:00 PM",
       "13:30": "1:30 PM",
       "14:00": "2:00 PM",
+      "18:00": "6:00 PM",
+      "18:30": "6:30 PM",
       "19:00": "7:00 PM",
       "19:30": "7:30 PM",
       "20:00": "8:00 PM",
@@ -104,6 +106,18 @@
       "21:00": "9:00 PM",
       "21:30": "9:30 PM",
       "22:00": "10:00 PM"
+    },
+    "bookingForm": {
+      "mainTitle": "BOOK A TABLE",
+      "date": "Date",
+      "time": "Time",
+      "selectTime": "Select time",
+      "howManyPeople": "How many people ?",
+      "comingSoon": "Coming soon..."
+    },
+    "datePicker": {
+      "selectDate": "Select Date",
+      "dayHeaders": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     }
   }
 } 
