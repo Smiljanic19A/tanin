@@ -213,12 +213,12 @@ export default {
       slides: [
         {
           type: 'wine',
-          background: '/banner_plate.png',
+          background: '/banner_white.svg',
           filename: 'wine-card.pdf'
         },
         {
           type: 'dining',
-          background: '/banner_white.svg',
+          background: '/banner_plate.png',
           filename: 'dining-menu.pdf'
         },
         {
