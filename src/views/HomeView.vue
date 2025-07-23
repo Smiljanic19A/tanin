@@ -64,7 +64,8 @@
             </h3>
             <p class="contact-link">
               <transition name="slide-text" mode="out-in">
-                <span :key="currentLanguage + 'home.contactDirections'">{{ $t('home.contactDirections') }}</span>
+                <span :key="currentLanguage + 'home.contactDirections'"><a href="https://www.google.com/maps/dir//TANNIN+Wine+Bistro,+%C5%BDor%C5%BEa+Klemansoa+27v,+Beograd+11158/@44.824628,20.4706631,21z/data=!4m17!1m7!3m6!1s0x475a7b002abc02f5:0x344219103762091!2sTANNIN+Wine+Bistro!8m2!3d44.8246407!4d20.4709404!16s%2Fg%2F11y3mx_0d8!4m8!1m0!1m5!1m1!1s0x475a7b002abc02f5:0x344219103762091!2m2!1d20.4709493!2d44.8246464!3e2?entry=ttu&g_ep=EgoyMDI1MDcyMS4wIKXMDSoASAFQAw%3D%3D" 
+                  target="_blank">{{ $t('home.contactDirections') }}</a></span>
               </transition>
             </p>
           </div>
@@ -358,6 +359,19 @@ export default {
 .contact-link:hover {
   opacity: 1;
   color: #ca371c;
+}
+
+.contact-link a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.contact-link a:visited,
+.contact-link a:link,
+.contact-link a:active,
+.contact-link a:hover {
+  color: inherit;
+  text-decoration: none;
 }
 
 .hours-text {
