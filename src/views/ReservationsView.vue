@@ -108,77 +108,83 @@
               </transition>
             </h2>
             
-            <div class="booking-form">
-              <!-- Date Selection -->
-              <div class="form-group">
-                <label>
-                  <transition name="slide-text" mode="out-in">
-                    <span :key="currentLanguage + 'reservations.bookingForm.date'">{{ $t('reservations.bookingForm.date') }}</span>
-                  </transition>
-                </label>
-                <div class="date-input-container" @click="showDatePicker = true">
-                  <span class="date-display">{{ formatPrivateDisplayDate }}</span>
+            <div class="booking-form private-form">
+              <!-- Row 1: Date and Contact Email -->
+              <div class="form-row">
+                <!-- Date Selection -->
+                <div class="form-group form-group-half">
+                  <label>
+                    <transition name="slide-text" mode="out-in">
+                      <span :key="currentLanguage + 'reservations.bookingForm.date'">{{ $t('reservations.bookingForm.date') }}</span>
+                    </transition>
+                  </label>
+                  <div class="date-input-container" @click="showDatePicker = true">
+                    <span class="date-display">{{ formatPrivateDisplayDate }}</span>
+                  </div>
+                </div>
+                
+                <!-- Contact Email -->
+                <div class="form-group form-group-half">
+                  <label>
+                    <transition name="slide-text" mode="out-in">
+                      <span :key="currentLanguage + 'reservations.privateForm.email'">{{ $t('reservations.privateForm.email') }}</span>
+                    </transition>
+                  </label>
+                  <input 
+                    v-model="privateForm.email" 
+                    type="email" 
+                    class="text-input"
+                    :placeholder="$t('reservations.privateForm.email')"
+                  />
                 </div>
               </div>
               
-              <!-- Contact Email -->
-              <div class="form-group">
-                <label>
-                  <transition name="slide-text" mode="out-in">
-                    <span :key="currentLanguage + 'reservations.privateForm.email'">{{ $t('reservations.privateForm.email') }}</span>
-                  </transition>
-                </label>
-                <input 
-                  v-model="privateForm.email" 
-                  type="email" 
-                  class="text-input"
-                  :placeholder="$t('reservations.privateForm.email')"
-                />
-              </div>
-              
-              <!-- Event Type -->
-              <div class="form-group">
-                <label>
-                  <transition name="slide-text" mode="out-in">
-                    <span :key="currentLanguage + 'reservations.privateForm.eventType'">{{ $t('reservations.privateForm.eventType') }}</span>
-                  </transition>
-                </label>
-                <select v-model="privateForm.eventType" class="time-select">
-                  <option value="">{{ $t('reservations.privateForm.selectEventType') }}</option>
-                  <option v-for="eventType in eventTypes" :key="eventType.value" :value="eventType.value">
-                    {{ eventType.label }}
-                  </option>
-                </select>
-              </div>
-              
-              <!-- Number of People -->
-              <div class="form-group">
-                <label>
-                  <transition name="slide-text" mode="out-in">
-                    <span :key="currentLanguage + 'reservations.privateForm.peopleRange'">{{ $t('reservations.privateForm.peopleRange') }}</span>
-                  </transition>
-                </label>
-                <select v-model="privateForm.peopleRange" class="time-select">
-                  <option value="">{{ $t('reservations.privateForm.selectPeopleRange') }}</option>
-                  <option v-for="peopleRange in peopleRanges" :key="peopleRange.value" :value="peopleRange.value">
-                    {{ peopleRange.label }}
-                  </option>
-                </select>
-              </div>
-              
-              <!-- Budget -->
-              <div class="form-group">
-                <label>
-                  <transition name="slide-text" mode="out-in">
-                    <span :key="currentLanguage + 'reservations.privateForm.budget'">{{ $t('reservations.privateForm.budget') }}</span>
-                  </transition>
-                </label>
-                <select v-model="privateForm.budget" class="time-select">
-                  <option value="">{{ $t('reservations.privateForm.selectBudget') }}</option>
-                  <option v-for="budgetRange in budgetRanges" :key="budgetRange.value" :value="budgetRange.value">
-                    {{ budgetRange.label }}
-                  </option>
-                </select>
+              <!-- Row 2: Event Type, Number of People, and Budget -->
+              <div class="form-row">
+                <!-- Event Type -->
+                <div class="form-group form-group-third">
+                  <label>
+                    <transition name="slide-text" mode="out-in">
+                      <span :key="currentLanguage + 'reservations.privateForm.eventType'">{{ $t('reservations.privateForm.eventType') }}</span>
+                    </transition>
+                  </label>
+                  <select v-model="privateForm.eventType" class="time-select">
+                    <option value="">{{ $t('reservations.privateForm.selectEventType') }}</option>
+                    <option v-for="eventType in eventTypes" :key="eventType.value" :value="eventType.value">
+                      {{ eventType.label }}
+                    </option>
+                  </select>
+                </div>
+                
+                <!-- Number of People -->
+                <div class="form-group form-group-third">
+                  <label>
+                    <transition name="slide-text" mode="out-in">
+                      <span :key="currentLanguage + 'reservations.privateForm.peopleRange'">{{ $t('reservations.privateForm.peopleRange') }}</span>
+                    </transition>
+                  </label>
+                  <select v-model="privateForm.peopleRange" class="time-select">
+                    <option value="">{{ $t('reservations.privateForm.selectPeopleRange') }}</option>
+                    <option v-for="peopleRange in peopleRanges" :key="peopleRange.value" :value="peopleRange.value">
+                      {{ peopleRange.label }}
+                    </option>
+                  </select>
+                </div>
+                
+                <!-- Budget -->
+                <div class="form-group form-group-third">
+                  <label>
+                    <transition name="slide-text" mode="out-in">
+                      <span :key="currentLanguage + 'reservations.privateForm.budget'">{{ $t('reservations.privateForm.budget') }}</span>
+                    </transition>
+                  </label>
+                  <select v-model="privateForm.budget" class="time-select">
+                    <option value="">{{ $t('reservations.privateForm.selectBudget') }}</option>
+                    <option v-for="budgetRange in budgetRanges" :key="budgetRange.value" :value="budgetRange.value">
+                      {{ budgetRange.label }}
+                    </option>
+                  </select>
+                </div>
               </div>
               
               <!-- Message -->
@@ -763,6 +769,27 @@ export default {
   transform: translateY(0);
 }
 
+/* Desktop-only private form row layout */
+.private-form {
+  max-width: 800px;
+  width: 100%;
+}
+
+.form-row {
+  display: flex;
+  gap: 3rem;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.form-group-half {
+  flex: 1;
+}
+
+.form-group-third {
+  flex: 1;
+}
+
 .coming-soon {
   font-size: 1.2rem;
   opacity: 0.7;
@@ -1140,6 +1167,22 @@ export default {
   .submit-btn:hover {
     background-color: #b52f16;
     transform: translateY(-1px);
+  }
+  
+  /* Mobile override for private form - single column layout */
+  .private-form {
+    max-width: 100%;
+  }
+  
+  .form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .form-group-half,
+  .form-group-third {
+    flex: none;
   }
   
   .coming-soon {
