@@ -74,6 +74,20 @@
                   </option>
                 </select>
               </div>
+                <!-- Phone Number -->
+                <div class="form-group">
+                 <label>
+                   <transition name="slide-text" mode="out-in">
+                     <span :key="currentLanguage + 'reservations.bookingForm.phone'">{{ $t('reservations.bookingForm.phone') }}</span>
+                   </transition>
+                 </label>
+                 <input 
+                   v-model="bookingForm.phone" 
+                   type="tel" 
+                   class="text-input"
+                   :placeholder="$t('reservations.bookingForm.phone')"
+                 />
+               </div>
               
                              <!-- Guest Counter -->
                <div class="form-group">
@@ -88,6 +102,8 @@
                    <button type="button" class="counter-btn" @click="incrementGuests">+</button>
                  </div>
                </div>
+               
+
                
                <!-- Submit Button -->
                <div class="form-group submit-group">
