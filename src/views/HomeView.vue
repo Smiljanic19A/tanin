@@ -248,7 +248,7 @@ export default {
   font-weight: 400;
   color: var(--text-color);
   margin-bottom: 2rem;
-  font-family: 'Georgia', serif;
+  font-family: 'Corinthia', cursive;
   line-height: 1.2;
   transition: var(--transition);
 }
@@ -330,12 +330,14 @@ export default {
 }
 
 .contact-item {
+  font-family: 'Montserrat', sans-serif;
   padding: 1.5rem;
 }
 
 .contact-title {
   font-size: 1.5rem;
-  font-weight: 400;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
   color: var(--text-color);
   margin-bottom: 1rem;
   font-family: 'Georgia', serif;

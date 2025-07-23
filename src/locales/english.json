@@ -21,7 +21,23 @@
     "title": "MENU",
     "wineCard": "Wine Card",
     "diningMenu": "Dining Menu",
-    "cocktailCard": "Cocktail Card"
+    "cocktailCard": "Cocktail Card",
+    "viewButton": "View Menu",
+    "downloading": "Downloading Menu",
+    "diningDescription": "Our dining menu features a variety of Italian dishes, from classic pasta and risotto to seafood and meat options. We also offer a selection of vegetarian and vegan options.",
+    "cocktailDescription": "Our cocktail menu features a variety of classic and innovative cocktails, from classic martinis to modern craft cocktails. We also offer a selection of non-alcoholic options.",
+    "wineDescription": "Our wine menu features a variety of Italian wines, from classic red and white wines to sparkling wines and dessert wines. We also offer a selection of non-alcoholic options.",
+    "diningViewButton": "View Dining Menu",
+    "cocktailViewButton": "View Cocktail Menu",
+    "diningDownloading": "Downloading Dining Menu",
+    "cocktailDownloading": "Downloading Cocktail Menu",
+    "diningDownloadButton": "Download Dining Menu",
+    "cocktailDownloadButton": "Download Cocktail Menu",
+    "diningDownloaded": "Dining Menu Downloaded",
+    "cocktailDownloaded": "Cocktail Menu Downloaded",
+    "diningDownloadedMessage": "Dining menu downloaded successfully",
+    "cocktailDownloadedMessage": "Cocktail menu downloaded successfully"
+
   },
   "reservations": {
     "title": "RESERVATIONS",
