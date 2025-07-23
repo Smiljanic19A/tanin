@@ -118,7 +118,7 @@
                       <span :key="currentLanguage + 'reservations.bookingForm.date'">{{ $t('reservations.bookingForm.date') }}</span>
                     </transition>
                   </label>
-                  <div class="date-input-container" @click="showDatePicker = true">
+                  <div class="date-input-container-private" @click="showDatePicker = true">
                     <span class="date-display">{{ formatPrivateDisplayDate }}</span>
                   </div>
                 </div>
@@ -478,7 +478,6 @@ export default {
   align-items: center;
   height: 100vh;
   background-color: var(--bg-color);
-  max-width: 600px;
   margin: 0 auto;
   margin-top: 22px;
 }
@@ -504,6 +503,7 @@ export default {
   margin-bottom: 2rem;
   width: 100%;
   border-bottom: 2px solid var(--text-color);
+  max-width: 600px;
 }
 
 .tab-button {
@@ -550,7 +550,6 @@ export default {
   font-size: 2rem;
   font-weight: 400;
   letter-spacing: 0.3em;
-  margin-bottom: 3rem;
   color: var(--text-color);
 }
 
@@ -593,7 +592,7 @@ export default {
   align-items: center;
 }
 
-.date-input-container {
+.date-input-container, .date-input-container-private {
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -603,6 +602,15 @@ export default {
   transition: all 0.3s ease;
   background-color: transparent;
   flex: 2;
+}
+
+.date-input-container-private {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: transparent;
 }
 
 .form-group:hover::after {
@@ -773,21 +781,67 @@ export default {
 .private-form {
   max-width: 800px;
   width: 100%;
+  gap: 0rem;
 }
 
 .form-row {
   display: flex;
   gap: 3rem;
   width: 100%;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .form-group-half {
   flex: 1;
+  min-width: 0;
 }
 
 .form-group-third {
   flex: 1;
+  min-width: 0;
+}
+
+/* Fix form elements in rows */
+.form-row .form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0.5rem 0;
+}
+
+.form-row .form-group label {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  text-align: left;
+  width: 100%;
+}
+
+.form-row .text-input,
+.form-row .time-select,
+.form-row .date-input-container-private {
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--text-color);
+  opacity: 0.3;
+}
+
+.form-row .text-input:focus,
+.form-row .time-select:focus,
+.form-row .date-input-container-private:hover {
+  border-bottom-color: #ca371c;
+  opacity: 0.8;
+}
+
+/* Remove the original form-group bottom border for row elements */
+.form-row .form-group::after {
+  display: none;
+}
+
+/* Fix date display alignment */
+.form-row .date-display {
+  color: var(--text-color);
+  font-size: 1.2rem;
 }
 
 .coming-soon {
@@ -1072,8 +1126,6 @@ export default {
     color: var(--text-color);
     text-shadow: none;
     font-size: 1.8rem;
-    margin-bottom: 1rem;
-    margin-top: 1rem;
   }
   
   .booking-form {
