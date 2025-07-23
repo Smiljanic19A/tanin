@@ -43,7 +43,7 @@
     "title": "RESERVATIONS",
     "bookTable": "Book a Table",
     "privateReservations": "Private Reservations",
-    "selectDate": "Select a date to check availability",
+    "selectDate": "Select date",
     "selectedDate": "Selected Date:",
     "numberOfGuests": "Number of Guests:",
     "selectGuests": "Select guests",

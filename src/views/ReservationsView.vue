@@ -68,20 +68,10 @@
                   </transition>
                 </label>
                 <select v-model="bookingForm.time" class="time-select">
-                  <option value="">
-                    <transition name="slide-text" mode="out-in">
-                      <span :key="currentLanguage + 'reservations.bookingForm.selectTime'">{{ $t('reservations.bookingForm.selectTime') }}</span>
-                    </transition>
+                  <option value="">{{ $t('reservations.bookingForm.selectTime') }}</option>
+                  <option v-for="timeSlot in timeSlots" :key="timeSlot.value" :value="timeSlot.value">
+                    {{ timeSlot.label }}
                   </option>
-                  <option value="18:00">{{ $t('reservations.timeSlots.18:00') }}</option>
-                  <option value="18:30">{{ $t('reservations.timeSlots.18:30') }}</option>
-                  <option value="19:00">{{ $t('reservations.timeSlots.19:00') }}</option>
-                  <option value="19:30">{{ $t('reservations.timeSlots.19:30') }}</option>
-                  <option value="20:00">{{ $t('reservations.timeSlots.20:00') }}</option>
-                  <option value="20:30">{{ $t('reservations.timeSlots.20:30') }}</option>
-                  <option value="21:00">{{ $t('reservations.timeSlots.21:00') }}</option>
-                  <option value="21:30">{{ $t('reservations.timeSlots.21:30') }}</option>
-                  <option value="22:00">{{ $t('reservations.timeSlots.22:00') }}</option>
                 </select>
               </div>
               
@@ -193,8 +183,7 @@ export default {
         name: '',
         phone: '',
         email: ''
-      },
-      dayHeaders: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+      }
     }
   },
   computed: {
@@ -208,9 +197,19 @@ export default {
       return `${month} ${this.currentDate.getFullYear()}`;
     },
     formatDisplayDate() {
-      if (!this.selectedDate) return 'Select date';
+      if (!this.selectedDate) return this.$t('reservations.selectDate');
       const options = { day: 'numeric', month: 'short', year: 'numeric' };
       return this.selectedDate.toLocaleDateString('en-GB', options);
+    },
+    translatedDayHeaders() {
+      return this.$t('reservations.datePicker.dayHeaders');
+    },
+    timeSlots() {
+      const slots = ['18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00'];
+      return slots.map(slot => ({
+        value: slot,
+        label: this.$t(`reservations.timeSlots.${slot}`)
+      }));
     },
     calendarDates() {
       const year = this.currentDate.getFullYear();
