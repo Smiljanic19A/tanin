@@ -685,7 +685,7 @@ export default {
 /* Responsive Design */
 @media (max-width: 768px) {
   .mobile-background {
-    display: block;
+    display: none;
   }
   
   .reservations-view {
@@ -696,88 +696,205 @@ export default {
     left: 0;
     right: 0;
     bottom: 0;
+    background-color: var(--bg-color);
   }
   
   .reservations-layout {
     position: relative;
     z-index: 2;
+    height: 100vh;
   }
   
   .reservations-container {
-    background-color: transparent;
-    padding: 1rem;
+    background-color: var(--bg-color);
+    padding: 0;
+    height: 100vh;
+    margin-top: 0;
+    max-width: 100%;
+    justify-content: flex-start;
   }
   
   .reservations-title {
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    color: var(--text-color);
+    text-shadow: none;
     font-size: 2rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
+    margin-top: 2rem;
+    padding: 0 1rem;
   }
   
   .tab-navigation {
-    border-bottom-color: rgba(255, 255, 255, 0.5);
+    border: none;
+    border-bottom: none;
+    margin-bottom: 1rem;
+    padding: 0 1rem;
+    gap: 0.8rem;
+    display: flex;
+    flex-direction: column;
   }
   
   .tab-button {
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    color: white;
-    backdrop-filter: blur(4px);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-    padding: 1rem 0.25rem;
+    background: transparent;
+    border: 2px solid var(--text-color);
+    color: var(--text-color);
+    backdrop-filter: none;
+    text-shadow: none;
+    padding: 1rem 1.5rem;
     font-size: 1rem;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    opacity: 0.7;
+    width: 100%;
+    text-align: center;
+    white-space: nowrap;
+    overflow: visible;
   }
   
   .tab-button.active {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: white;
+    background: var(--text-color);
+    border-color: var(--text-color);
+    color: var(--bg-color);
+    text-shadow: none;
+    font-weight: 500;
+    transform: scale(1.02);
+    opacity: 1;
+  }
+  
+  .tab-button:hover {
+    opacity: 1;
+    transform: translateY(-1px);
+  }
+  
+  .tab-button.active:hover {
+    transform: scale(1.02) translateY(-1px);
+  }
+  
+  .tab-content {
+    flex: 1;
+    height: calc(100vh - 200px);
+    overflow-y: auto;
   }
   
   .main-title {
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    color: var(--text-color);
+    text-shadow: none;
     font-size: 1.8rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
   }
   
   .booking-form {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    padding: 2rem;
+    background: var(--bg-color);
+    backdrop-filter: none;
+    padding: 2rem 1.5rem;
+    margin: 0;
+    border-radius: 0;
+    width: 100%;
+    max-width: 100%;
+    min-height: calc(100vh - 250px);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 2.5rem;
+  }
+  
+  .form-group {
+    padding: 2rem 0;
   }
   
   .form-group label {
-    color: #000;
+    color: var(--text-color);
+    font-size: 1.1rem;
+    font-weight: 500;
   }
   
   .form-group::after {
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: var(--text-color);
+    opacity: 0.3;
+  }
+  
+  .form-group:hover::after {
+    background-color: #ca371c;
+    opacity: 0.8;
   }
   
   .date-input-container,
   .time-select {
-    color: #000;
+    color: var(--text-color);
+    font-size: 1.1rem;
   }
   
   .counter-btn {
     background: #8B7355;
     color: white;
     border: none;
+    width: 40px;
+    height: 40px;
+    font-size: 1.4rem;
   }
   
   .guest-count {
-    color: #000;
+    color: var(--text-color);
+    font-size: 1.4rem;
   }
   
   .coming-soon {
-    color: white;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    color: var(--text-color);
+    text-shadow: none;
+    margin-top: 2rem;
+    font-size: 1.3rem;
   }
   
   .date-picker-popup {
     width: 95%;
-    margin: 1rem;
+    margin: 1rem auto;
+    padding: 1rem;
+    max-width: none;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+  
+  .calendar-grid {
+    gap: 1px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .day-header {
+    background-color: var(--bg-color);
+    padding: 0.8rem 0.2rem;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text-color);
+    opacity: 0.8;
+  }
+  
+  .calendar-date {
+    background-color: var(--bg-color);
+    padding: 1.2rem 0.2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: var(--text-color);
+  }
+  
+  .day-header {
+    background-color: var(--bg-color);
+    padding: 1rem 0.2rem;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    opacity: 0.8;
   }
 }
 
