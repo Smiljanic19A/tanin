@@ -287,6 +287,15 @@ html {
   min-height: 100vh;
 }
 
+/* Apply Montserrat to paragraph text and navigation */
+p {
+  font-family: 'Montserrat', sans-serif;
+}
+
+.nav-main-item {
+  font-family: 'Montserrat', sans-serif;
+}
+
 .navbar {
   background: var(--nav-bg);
   padding: 1rem 0;
