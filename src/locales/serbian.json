@@ -21,7 +21,14 @@
     "title": "MENI",
     "wineCard": "Vinska Karta",
     "diningMenu": "Meni Jela",
-    "cocktailCard": "Koktel Karta"
+    "cocktailCard": "Koktel Karta",
+    "viewButton": "Pogledaj Meni",
+    "downloading": "Preuzimanje...",
+    "diningDescription": "Naš meni jela sadrži raznovrsne italijanske jela, od klasičnih pasta i rizota do opcija za seafood i meso. Takođe nudimo izbor vegetarijanskih i vegan opcija.",
+    "cocktailDescription": "Naš meni koktela sadrži raznovrsne klasične i inovativne koktele, od klasičnih martini-ja do modernih koktela. Takođe nudimo izbor nealkoholnih opcija.",
+    "wineDescription": "Naš meni vina sadrži raznovrsne italijanske vina, od klasičnih crvenih i belih vina do špiritnih vina i desert vina. Takođe nudimo izbor nealkoholnih opcija.",
+    "diningViewButton": "Pogledaj Meni Jela",
+    "cocktailViewButton": "Pogledaj Meni Koktela"
   },
   "reservations": {
     "title": "REZERVACIJE",
