@@ -5,7 +5,7 @@
       <div class="logo-container">
         <!-- Main Logo -->
         <div class="main-logo">
-          <img :src="currentLogo" alt="Tanin Logo" class="logo-image">
+          <img :src="currentLogo" alt="Tanin Logo" class="logo-image" @click="rotateLogo" :style="{ transform: `rotate(${logoRotation}deg) scale(${logoScale})` }" @mouseenter="onHover" @mouseleave="onLeave">
         </div>
         
         <!-- Brand Text Banner -->
@@ -143,6 +143,12 @@ export default {
   components: {
     WineSlider
   },
+  data() {
+    return {
+      logoRotation: 0,
+      logoScale: 1
+    }
+  },
   computed: {
     ...mapGetters(['isDarkMode']),
     currentLogo() {
@@ -152,7 +158,18 @@ export default {
       return this.isDarkMode ? '/banner_text_light.png' : '/banner_text_dark.png'
     }
   },
-    mounted() {
+  methods: {
+    rotateLogo() {
+      this.logoRotation += 90
+    },
+    onHover() {
+      this.logoScale = 1.02
+    },
+    onLeave() {
+      this.logoScale = 1
+    }
+  },
+  mounted() {
     // Ensure page loads at the top (logo section)
     window.scrollTo(0, 0)
   }
@@ -190,7 +207,12 @@ export default {
   width: auto;
   height: 200px;
   max-width: 100%;
-  transition: var(--transition);
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.logo-image:hover {
+  transform: scale(1.02);
 }
 
 .brand-banner {
