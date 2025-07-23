@@ -223,7 +223,7 @@ export default {
         },
         {
           type: 'cocktail',
-          background: '/banner_plate.png',
+          background: '/cocktail_back.jpg',
           filename: 'cocktail-card.pdf'
         }
       ]
