@@ -560,6 +560,27 @@ export default {
   justify-content: flex-start;
   min-height: 500px;
   overflow-y: auto;
+  /* Ultra thin scrollbar */
+  scrollbar-width: 0px;
+  scrollbar-color: #ca371c;
+}
+
+/* Webkit scrollbar styling (Chrome, Safari, Edge) */
+.tab-content::-webkit-scrollbar {
+  width: px;
+}
+
+.tab-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tab-content::-webkit-scrollbar-thumb {
+  background-color: rgba(139, 115, 85, 0.3);
+  border-radius: 2px;
+}
+
+.tab-content::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(139, 115, 85, 0.5);
 }
 
 .main-title {
@@ -683,7 +704,7 @@ export default {
   width: 30px;
   height: 30px;
   border: none;
-  background: #8B7355;
+  background: #ca371c;
   color: white;
   border-radius: 50%;
   font-size: 1.5rem;
@@ -1136,6 +1157,23 @@ export default {
     flex: 1;
     height: calc(100vh - 200px);
     overflow-y: auto;
+    /* Ultra thin scrollbar for mobile */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(139, 115, 85, 0.2) transparent;
+  }
+  
+  /* Mobile webkit scrollbar styling */
+  .tab-content::-webkit-scrollbar {
+    width: 2px;
+  }
+  
+  .tab-content::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .tab-content::-webkit-scrollbar-thumb {
+    background-color: rgba(139, 115, 85, 0.2);
+    border-radius: 1px;
   }
   
   .main-title {
