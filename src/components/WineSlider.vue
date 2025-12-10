@@ -49,15 +49,15 @@ export default {
       isTransitioning: false,
       slides: [
         {
-          image: '/banner_white.svg',
+          image: '/wine_1.JPG',
           alt: 'Wine Collection 1'
         },
         {
-          image: '/banner_white.svg',
+          image: '/wine_2.jpg',
           alt: 'Wine Collection 2'
         },
         {
-          image: '/banner_white.svg',
+          image: '/wine_3.JPG',
           alt: 'Wine Collection 3'
         }
       ]
@@ -154,7 +154,7 @@ export default {
 <style scoped>
 .image-slider {
   width: 100%;
-  height: 100vh;
+  height: 80vh;
   position: relative;
   overflow: hidden;
   outline: none;

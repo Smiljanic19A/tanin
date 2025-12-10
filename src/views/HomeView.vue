@@ -47,7 +47,20 @@
     <!-- Contact Information Section -->
     <section class="contact-section" id="location-section">
       <div class="contact-hero-image">
-        <img src="/banner_plate.png" alt="Delicious Food" class="food-image">
+        <div class="food-carousel">
+          <div 
+            class="food-slides-wrapper"
+            :style="{ transform: `translateX(-${currentFoodSlide * 100}%)` }"
+          >
+            <div 
+              v-for="(image, index) in foodImages" 
+              :key="index" 
+              class="food-slide"
+            >
+              <img :src="image" :alt="`Food ${index + 1}`" class="food-image">
+            </div>
+          </div>
+        </div>
         <div class="logo-overlay">
           <img :src="currentLogo" alt="Tanin Logo" class="overlay-logo">
         </div>
@@ -146,7 +159,17 @@ export default {
   data() {
     return {
       logoRotation: 0,
-      logoScale: 1
+      logoScale: 1,
+      currentFoodSlide: 0,
+      foodSlideInterval: null,
+      foodImages: [
+        '/food_1.jpg',
+        '/food_2.jpg',
+        '/food_3.jpg',
+        '/food_4.jpg',
+        '/food_5.jpg',
+        '/food_6.jpg'
+      ]
     }
   },
   computed: {
@@ -167,11 +190,30 @@ export default {
     },
     onLeave() {
       this.logoScale = 1
+    },
+    nextFoodSlide() {
+      this.currentFoodSlide = (this.currentFoodSlide + 1) % this.foodImages.length
+    },
+    startFoodCarousel() {
+      this.foodSlideInterval = setInterval(() => {
+        this.nextFoodSlide()
+      }, 3000)
+    },
+    stopFoodCarousel() {
+      if (this.foodSlideInterval) {
+        clearInterval(this.foodSlideInterval)
+        this.foodSlideInterval = null
+      }
     }
   },
   mounted() {
     // Ensure page loads at the top (logo section)
     window.scrollTo(0, 0)
+    // Start food carousel
+    this.startFoodCarousel()
+  },
+  beforeUnmount() {
+    this.stopFoodCarousel()
   }
 }
 </script>
@@ -190,7 +232,6 @@ export default {
   justify-content: center;
   background-color: var(--bg-color);
   transition: var(--transition);
-  scroll-snap-align: start;
 }
 
 .logo-container {
@@ -228,8 +269,7 @@ export default {
 
 .wine-collection-section {
   width: 100%;
-  height: 100vh;
-  scroll-snap-align: start;
+  height: 80vh;
 }
 
 .restaurant-section {
@@ -290,17 +330,42 @@ export default {
 /* Contact Section */
 .contact-section {
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
   background-color: var(--bg-color);
   transition: var(--transition);
   scroll-snap-align: start;
+  overflow: hidden;
 }
 
 .contact-hero-image {
   width: 100%;
   height: 60vh;
+  flex-shrink: 0;
   position: relative;
   overflow: hidden;
+}
+
+.food-carousel {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.food-slides-wrapper {
+  display: flex;
+  height: 100%;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.food-slide {
+  min-width: 100%;
+  width: 100%;
+  height: 100%;
+  flex-shrink: 0;
+  position: relative;
 }
 
 .food-image {
@@ -308,12 +373,14 @@ export default {
   height: 100%;
   object-fit: cover;
   object-position: center;
+  display: block;
 }
 
 .logo-overlay {
   position: absolute;
   top: 2rem;
   left: 2rem;
+  z-index: 10;
 }
 
 .overlay-logo {
@@ -324,9 +391,15 @@ export default {
 }
 
 .contact-info-container {
-  padding: 2rem 2rem;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .contact-grid {
@@ -451,8 +524,12 @@ export default {
     text-align: left;
   }
   
+  .contact-section {
+    height: 100vh;
+  }
+  
   .contact-hero-image {
-    height: 40vh;
+    height: 45vh;
   }
   
   .logo-overlay {
@@ -465,7 +542,7 @@ export default {
   }
   
   .contact-info-container {
-    padding: 3rem 1.5rem;
+    padding: 1rem 1.5rem;
   }
   
   .contact-grid {
@@ -522,8 +599,12 @@ export default {
     line-height: 1.6;
   }
   
+  .contact-section {
+    height: 100vh;
+  }
+  
   .contact-hero-image {
-    height: 35vh;
+    height: 40vh;
   }
   
   .overlay-logo {
@@ -531,7 +612,7 @@ export default {
   }
   
   .contact-info-container {
-    padding: 2rem 1rem;
+    padding: 0.5rem 1rem;
   }
   
   .contact-title {
