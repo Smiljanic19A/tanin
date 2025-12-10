@@ -3,9 +3,7 @@
     <!-- Header -->
     <div class="menu-header">
       <h1 class="main-title">
-        <transition name="slide-text" mode="out-in">
-          <span :key="currentLanguage + 'menu.title'">{{ $t('menu.title') }}</span>
-        </transition>
+      
       </h1>
     </div>
 
@@ -281,10 +279,22 @@ export default {
       this.startAutoSlide();
     },
     
-          async viewMenu(type) {
-        // Open the local PDF file in a new tab
-        window.open('/example.pdf', '_blank');
-      },
+    async viewMenu(type) {
+      // Open the local PDF file in a new tab based on type and selected language
+      let pdfFile;
+      
+      if (type === 'wine') {
+        pdfFile = '/tanin_wine.pdf';
+      } else if (type === 'dining') {
+        pdfFile = this.currentLanguage === 'English' 
+          ? '/tanin_menu_english.pdf' 
+          : '/menu_serbian.pdf';
+      } else if (type === 'cocktail') {
+        pdfFile = '/cocktails.pdf';
+      }
+      
+      window.open(pdfFile, '_blank');
+    },
     
     async handleDownload(type, filename, displayName) {
       this.downloadStates[type] = true;
