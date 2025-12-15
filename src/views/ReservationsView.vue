@@ -150,6 +150,37 @@
                 </div>
               </div>
 
+              <!-- Reservation Type (Dining/Drinks) -->
+              <div class="form-field">
+                <label class="field-label">
+                  <span class="label-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M18 8h1a4 4 0 0 1 0 8h-1"/>
+                      <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/>
+                      <line x1="6" y1="1" x2="6" y2="4"/>
+                      <line x1="10" y1="1" x2="10" y2="4"/>
+                      <line x1="14" y1="1" x2="14" y2="4"/>
+                    </svg>
+                  </span>
+                  <transition name="slide-text" mode="out-in">
+                    <span :key="currentLanguage + 'reservations.privateForm.reservationType'">{{ $t('reservations.privateForm.reservationType') }}</span>
+                  </transition>
+                </label>
+                <div class="select-wrapper">
+                  <select v-model="bookingForm.reservationType" class="styled-select">
+                    <option value="">{{ $t('reservations.privateForm.selectReservationType') }}</option>
+                    <option v-for="resType in reservationTypes" :key="resType.value" :value="resType.value">
+                      {{ resType.label }}
+                    </option>
+                  </select>
+                  <span class="select-arrow">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="6,9 12,15 18,9"/>
+                    </svg>
+                  </span>
+                </div>
+              </div>
+
               <!-- Phone Field -->
               <div class="form-field">
                 <label class="field-label">
@@ -243,7 +274,7 @@
                 </div>
               </div>
 
-              <!-- Row 2: Event Type, People, Budget -->
+              <!-- Row 2: Event Type, People & Budget -->
               <div class="form-row form-row-triple">
                 <div class="form-field">
                   <label class="field-label">
@@ -468,7 +499,8 @@ export default {
       ],
       bookingForm: {
         time: '',
-        phone: ''
+        phone: '',
+        reservationType: ''
       },
       privateForm: {
         date: new Date(2025, 1, 20),
@@ -512,6 +544,13 @@ export default {
       return types.map(type => ({
         value: type,
         label: this.$t(`reservations.privateForm.eventTypes.${type}`)
+      }));
+    },
+    reservationTypes() {
+      const types = ['dining', 'drinks', 'both'];
+      return types.map(type => ({
+        value: type,
+        label: this.$t(`reservations.privateForm.reservationTypes.${type}`)
       }));
     },
     budgetRanges() {
@@ -644,11 +683,18 @@ export default {
   padding: 6rem 2rem 3rem;
   text-align: center;
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
 .hero-content {
-  max-width: 600px;
-  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .page-title {
@@ -658,6 +704,14 @@ export default {
   letter-spacing: 0.4em;
   margin: 0;
   text-transform: uppercase;
+  text-align: center;
+  width: 100%;
+}
+
+.page-title span {
+  display: inline-block;
+  /* Compensate for letter-spacing on last character to center properly */
+  padding-left: 0.4em;
 }
 
 .title-accent {

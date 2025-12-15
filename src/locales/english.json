@@ -131,6 +131,13 @@
       "email": "Contact Email",
       "eventType": "Event Type",
       "selectEventType": "Select event type",
+      "reservationType": "Reservation Type",
+      "selectReservationType": "Select type",
+      "reservationTypes": {
+        "dining": "Dining",
+        "drinks": "Drinks Only",
+        "both": "Dining & Drinks"
+      },
       "message": "Message",
       "messagePlaceholder": "Tell us about your event, special requirements, or any other details...",
       "budget": "Budget",

@@ -122,6 +122,13 @@
       "email": "Kontakt Email",
       "eventType": "Tip Događaja",
       "selectEventType": "Izaberite tip događaja",
+      "reservationType": "Večera ili Piće",
+      "selectReservationType": "Izaberite tip",
+      "reservationTypes": {
+        "dining": "Večera",
+        "drinks": "Samo Piće",
+        "both": "Večera i Piće"
+      },
       "message": "Poruka",
       "messagePlaceholder": "Recite nam o vašem događaju, posebnim zahtevima ili bilo kojim drugim detaljima...",
       "budget": "Budžet",
