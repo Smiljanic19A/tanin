@@ -17,7 +17,7 @@
 
     <!-- Wine Collection Section -->
     <section class="wine-collection-section">
-      <WineSlider />
+      <MasonryGrid :images="wineImages" :auto-slide="true" :slide-interval="5000" :display-count="3" />
     </section>
 
     <!-- Restaurant Description Section -->
@@ -47,23 +47,7 @@
     <!-- Contact Information Section -->
     <section class="contact-section" id="location-section">
       <div class="contact-hero-image">
-        <div class="food-carousel">
-          <div 
-            class="food-slides-wrapper"
-            :style="{ transform: `translateX(-${currentFoodSlide * 100}%)` }"
-          >
-            <div 
-              v-for="(image, index) in foodImages" 
-              :key="index" 
-              class="food-slide"
-            >
-              <img :src="image" :alt="`Food ${index + 1}`" class="food-image">
-            </div>
-          </div>
-        </div>
-        <div class="logo-overlay">
-          <img :src="currentLogo" alt="Tanin Logo" class="overlay-logo">
-        </div>
+        <MasonryGrid :images="foodImages" :auto-slide="true" :slide-interval="5000" :display-count="3" />
       </div>
       
       <div class="contact-info-container">
@@ -147,28 +131,32 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import WineSlider from '@/components/WineSlider.vue'
+import MasonryGrid from '@/components/MasonryGrid.vue'
 import translationMixin from '@/mixins/translationMixin'
 
 export default {
   name: 'HomeView',
   mixins: [translationMixin],
   components: {
-    WineSlider
+    MasonryGrid
   },
   data() {
     return {
       logoRotation: 0,
       logoScale: 1,
-      currentFoodSlide: 0,
-      foodSlideInterval: null,
+      wineImages: [
+        '/grid1/wine_1.JPG',
+        '/grid1/wine_2.jpg',
+        '/grid1/wine_3.JPG',
+        '/grid1/IMG_9671.JPG'
+      ],
       foodImages: [
-        '/food_1.jpg',
-        '/food_2.jpg',
-        '/food_3.jpg',
-        '/food_4.jpg',
-        '/food_5.jpg',
-        '/food_6.jpg'
+        '/grid2/food_1.jpg',
+        '/grid2/food_2.jpg',
+        '/grid2/food_3.jpg',
+        '/grid2/food_4.jpg',
+        '/grid2/food_5.jpg',
+        '/grid2/food_6.jpg'
       ]
     }
   },
@@ -190,30 +178,11 @@ export default {
     },
     onLeave() {
       this.logoScale = 1
-    },
-    nextFoodSlide() {
-      this.currentFoodSlide = (this.currentFoodSlide + 1) % this.foodImages.length
-    },
-    startFoodCarousel() {
-      this.foodSlideInterval = setInterval(() => {
-        this.nextFoodSlide()
-      }, 3000)
-    },
-    stopFoodCarousel() {
-      if (this.foodSlideInterval) {
-        clearInterval(this.foodSlideInterval)
-        this.foodSlideInterval = null
-      }
     }
   },
   mounted() {
     // Ensure page loads at the top (logo section)
     window.scrollTo(0, 0)
-    // Start food carousel
-    this.startFoodCarousel()
-  },
-  beforeUnmount() {
-    this.stopFoodCarousel()
   }
 }
 </script>
@@ -269,13 +238,17 @@ export default {
 
 .wine-collection-section {
   width: 100%;
-  height: 80vh;
+  min-height: 50vh;
+  background-color: var(--bg-color);
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  padding: 0;
 }
 
 .restaurant-section {
   width: 100%;
   min-height: 100vh;
-  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -307,17 +280,19 @@ export default {
 }
 
 .restaurant-title {
-  font-size: 2.5rem;
+  font-size: clamp(2rem, 4vw, 2.5rem);
   font-weight: 400;
   color: var(--text-color);
   margin-bottom: 2rem;
   font-family: 'Corinthia', cursive;
-  line-height: 1.2;
+  line-height: 1.3;
   transition: var(--transition);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .restaurant-description {
-  font-size: 1.1rem;
+  font-size: clamp(1rem, 1.8vw, 1.1rem);
   line-height: 1.8;
   color: var(--text-color);
   text-align: justify;
@@ -325,12 +300,15 @@ export default {
   font-weight: 400;
   opacity: 0.9;
   transition: var(--transition);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
 }
 
 /* Contact Section */
 .contact-section {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   background-color: var(--bg-color);
@@ -341,53 +319,30 @@ export default {
 
 .contact-hero-image {
   width: 100%;
-  height: 60vh;
+  min-height: 60vh;
   flex-shrink: 0;
   position: relative;
-  overflow: hidden;
-}
-
-.food-carousel {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  overflow: hidden;
-}
-
-.food-slides-wrapper {
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: var(--bg-color);
   display: flex;
-  height: 100%;
-  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.food-slide {
-  min-width: 100%;
-  width: 100%;
-  height: 100%;
-  flex-shrink: 0;
-  position: relative;
-}
-
-.food-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  display: block;
+  align-items: flex-start;
 }
 
 .logo-overlay {
   position: absolute;
   top: 2rem;
   left: 2rem;
-  z-index: 10;
+  z-index: 100;
+  pointer-events: none;
 }
 
 .overlay-logo {
   height: 60px;
   width: auto;
-  opacity: 0.8;
+  opacity: 0.9;
   transition: var(--transition);
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
 }
 
 .contact-info-container {
@@ -405,8 +360,8 @@ export default {
 .contact-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 1rem 6rem;
+  grid-template-rows: auto;
+  gap: 1.5rem 6rem;
   text-align: center;
   max-width: 900px;
   margin: 0 auto;
@@ -428,27 +383,37 @@ export default {
 .contact-item {
   font-family: 'Montserrat', sans-serif;
   padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: fit-content;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
 }
 
 .contact-title {
-  font-size: 1.5rem;
-  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  font-family: 'Georgia', serif;
   font-weight: 500;
   color: var(--text-color);
   margin-bottom: 1rem;
-  font-family: 'Georgia', serif;
-  line-height: 1.3;
+  line-height: 1.4;
   transition: var(--transition);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .contact-link {
   color: var(--text-color);
-  font-size: 1rem;
+  font-size: clamp(0.9rem, 1.5vw, 1rem);
   margin: 0;
   text-decoration: underline;
   cursor: pointer;
   opacity: 0.8;
   transition: var(--transition);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .contact-link:hover {
@@ -470,25 +435,31 @@ export default {
 }
 
 .hours-text {
-  font-size: 1.1rem;
+  font-size: clamp(0.95rem, 1.8vw, 1.1rem);
   color: var(--text-color);
   margin: 0.5rem 0;
   font-weight: 500;
   transition: var(--transition);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .hours-time {
-  font-size: 1.1rem;
+  font-size: clamp(0.95rem, 1.8vw, 1.1rem);
   color: var(--text-color);
   margin: 0;
   transition: var(--transition);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .contact-text {
-  font-size: 1rem;
+  font-size: clamp(0.9rem, 1.5vw, 1rem);
   color: var(--text-color);
   margin: 0.5rem 0;
   transition: var(--transition);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 /* Responsive Design */
@@ -529,7 +500,13 @@ export default {
   }
   
   .contact-hero-image {
-    height: 45vh;
+    min-height: auto;
+    height: auto;
+  }
+  
+  .logo-overlay {
+    top: 1rem;
+    left: 1rem;
   }
   
   .logo-overlay {
@@ -548,7 +525,11 @@ export default {
   .contact-grid {
     grid-template-columns: 1fr;
     grid-template-rows: auto;
-    gap: 2rem;
+    gap: 2.5rem;
+  }
+  
+  .contact-item {
+    padding: 1rem;
   }
   
   .contact-grid::before {
@@ -604,7 +585,13 @@ export default {
   }
   
   .contact-hero-image {
-    height: 40vh;
+    min-height: auto;
+    height: auto;
+  }
+  
+  .logo-overlay {
+    top: 0.75rem;
+    left: 0.75rem;
   }
   
   .overlay-logo {

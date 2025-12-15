@@ -1,147 +1,235 @@
 <template>
-  <div class="reservations-view">
-    <!-- Mobile background (hidden on desktop) -->
-    <div class="mobile-background" v-if="isMobile">
-      <img src="/plate.png" alt="Background" class="background-image">
-      <div class="background-overlay"></div>
-    </div>
-    
-    <div class="reservations-layout">
-      <!-- Reservations Content -->
-      <div class="reservations-container">
-        <h1 class="reservations-title">
+  <div class="reservations-page">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <h1 class="page-title">
           <transition name="slide-text" mode="out-in">
             <span :key="currentLanguage + 'reservations.title'">{{ $t('reservations.title') }}</span>
           </transition>
         </h1>
-        
-        <!-- Tab Navigation -->
-        <div class="tab-navigation">
-          <button 
-            class="tab-button" 
-            :class="{ active: activeTab === 'booking' }"
-            @click="activeTab = 'booking'"
-          >
-            <transition name="slide-text" mode="out-in">
-              <span :key="currentLanguage + 'reservations.bookTable'">{{ $t('reservations.bookTable') }}</span>
-            </transition>
-          </button>
-          <button 
-            class="tab-button" 
-            :class="{ active: activeTab === 'private' }"
-            @click="activeTab = 'private'"
-          >
-            <transition name="slide-text" mode="out-in">
-              <span :key="currentLanguage + 'reservations.privateReservations'">{{ $t('reservations.privateReservations') }}</span>
-            </transition>
-          </button>
-        </div>
-        
-        <!-- Tab Content -->
-        <div class="tab-content">
-          <!-- Book a Table Tab -->
-          <div v-if="activeTab === 'booking'" class="booking-tab">
-            <h2 class="main-title">
+        <div class="title-accent"></div>
+      </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="reservations-content">
+      <!-- Tab Switcher -->
+      <div class="tab-switcher">
+        <button 
+          class="tab-pill" 
+          :class="{ active: activeTab === 'booking' }"
+          @click="activeTab = 'booking'"
+        >
+          <span class="tab-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+              <line x1="9" y1="2" x2="9" y2="6"/>
+              <line x1="15" y1="2" x2="15" y2="6"/>
+            </svg>
+          </span>
+          <transition name="slide-text" mode="out-in">
+            <span :key="currentLanguage + 'reservations.bookTable'">{{ $t('reservations.bookTable') }}</span>
+          </transition>
+        </button>
+        <button 
+          class="tab-pill" 
+          :class="{ active: activeTab === 'private' }"
+          @click="activeTab = 'private'"
+        >
+          <span class="tab-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+              <path d="M2 17l10 5 10-5"/>
+              <path d="M2 12l10 5 10-5"/>
+            </svg>
+          </span>
+          <transition name="slide-text" mode="out-in">
+            <span :key="currentLanguage + 'reservations.privateReservations'">{{ $t('reservations.privateReservations') }}</span>
+          </transition>
+        </button>
+      </div>
+
+      <!-- Book a Table Form -->
+      <transition name="fade-slide" mode="out-in">
+        <div v-if="activeTab === 'booking'" key="booking" class="form-container">
+          <div class="form-card">
+            <h2 class="form-title">
               <transition name="slide-text" mode="out-in">
                 <span :key="currentLanguage + 'reservations.bookingForm.mainTitle'">{{ $t('reservations.bookingForm.mainTitle') }}</span>
               </transition>
             </h2>
             
-            <div class="booking-form">
-              <!-- Date Selection -->
-              <div class="form-group">
-                <label>
-                  <transition name="slide-text" mode="out-in">
-                    <span :key="currentLanguage + 'reservations.bookingForm.date'">{{ $t('reservations.bookingForm.date') }}</span>
-                  </transition>
-                </label>
-                <div class="date-input-container" @click="showDatePicker = true">
-                  <span class="date-display">{{ formatDisplayDate }}</span>
+            <form class="reservation-form" @submit.prevent="submitBooking">
+              <!-- Date & Time Row -->
+              <div class="form-row">
+                <div class="form-field">
+                  <label class="field-label">
+                    <span class="label-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="3" y="4" width="18" height="18" rx="2"/>
+                        <line x1="3" y1="10" x2="21" y2="10"/>
+                        <line x1="9" y1="2" x2="9" y2="6"/>
+                        <line x1="15" y1="2" x2="15" y2="6"/>
+                      </svg>
+                    </span>
+                    <transition name="slide-text" mode="out-in">
+                      <span :key="currentLanguage + 'reservations.bookingForm.date'">{{ $t('reservations.bookingForm.date') }}</span>
+                    </transition>
+                  </label>
+                  <div class="date-selector" @click="showDatePicker = true">
+                    <span class="selected-value">{{ formatDisplayDate }}</span>
+                    <span class="field-arrow">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9,18 15,12 9,6"/>
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="form-field">
+                  <label class="field-label">
+                    <span class="label-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                      </svg>
+                    </span>
+                    <transition name="slide-text" mode="out-in">
+                      <span :key="currentLanguage + 'reservations.bookingForm.time'">{{ $t('reservations.bookingForm.time') }}</span>
+                    </transition>
+                  </label>
+                  <div class="select-wrapper">
+                    <select v-model="bookingForm.time" class="styled-select">
+                      <option value="">{{ $t('reservations.bookingForm.selectTime') }}</option>
+                      <option v-for="timeSlot in timeSlots" :key="timeSlot.value" :value="timeSlot.value">
+                        {{ timeSlot.label }}
+                      </option>
+                    </select>
+                    <span class="select-arrow">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6,9 12,15 18,9"/>
+                      </svg>
+                    </span>
+                  </div>
                 </div>
               </div>
-              
-              <!-- Time Selection -->
-              <div class="form-group">
-                <label>
+
+              <!-- Guests Row -->
+              <div class="form-field guests-field">
+                <label class="field-label">
+                  <span class="label-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                      <circle cx="9" cy="7" r="4"/>
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                  </span>
                   <transition name="slide-text" mode="out-in">
-                    <span :key="currentLanguage + 'reservations.bookingForm.time'">{{ $t('reservations.bookingForm.time') }}</span>
+                    <span :key="currentLanguage + 'reservations.bookingForm.howManyPeople'">{{ $t('reservations.bookingForm.howManyPeople') }}</span>
                   </transition>
                 </label>
-                <select v-model="bookingForm.time" class="time-select">
-                  <option value="">{{ $t('reservations.bookingForm.selectTime') }}</option>
-                  <option v-for="timeSlot in timeSlots" :key="timeSlot.value" :value="timeSlot.value">
-                    {{ timeSlot.label }}
-                  </option>
-                </select>
+                <div class="guest-stepper">
+                  <button type="button" class="stepper-btn" @click="decrementGuests" :disabled="guestCount <= 1">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                  </button>
+                  <div class="guest-display">
+                    <span class="guest-number">{{ guestCount }}</span>
+                    <span class="guest-label">{{ guestCount === 1 ? 'Guest' : 'Guests' }}</span>
+                  </div>
+                  <button type="button" class="stepper-btn" @click="incrementGuests" :disabled="guestCount >= 10">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="12" y1="5" x2="12" y2="19"/>
+                      <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                  </button>
+                </div>
               </div>
-                <!-- Phone Number -->
-                <div class="form-group">
-                 <label>
-                   <transition name="slide-text" mode="out-in">
-                     <span :key="currentLanguage + 'reservations.bookingForm.phone'">{{ $t('reservations.bookingForm.phone') }}</span>
-                   </transition>
-                 </label>
-                 <input 
-                   v-model="bookingForm.phone" 
-                   type="tel" 
-                   class="text-input"
-                   :placeholder="$t('reservations.bookingForm.phone')"
-                 />
-               </div>
-              
-                             <!-- Guest Counter -->
-               <div class="form-group">
-                 <label>
-                   <transition name="slide-text" mode="out-in">
-                     <span :key="currentLanguage + 'reservations.bookingForm.howManyPeople'">{{ $t('reservations.bookingForm.howManyPeople') }}</span>
-                   </transition>
-                 </label>
-                 <div class="guest-counter">
-                   <button type="button" class="counter-btn" @click="decrementGuests">-</button>
-                   <span class="guest-count">{{ guestCount }}</span>
-                   <button type="button" class="counter-btn" @click="incrementGuests">+</button>
-                 </div>
-               </div>
-               
 
-               
-               <!-- Submit Button -->
-               <div class="form-group submit-group">
-                 <button type="submit" class="submit-btn">
-                   <transition name="slide-text" mode="out-in">
-                     <span :key="currentLanguage + 'reservations.bookingForm.submitButton'">{{ $t('reservations.bookingForm.submitButton') }}</span>
-                   </transition>
-                 </button>
-               </div>
-            </div>
+              <!-- Phone Field -->
+              <div class="form-field">
+                <label class="field-label">
+                  <span class="label-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                    </svg>
+                  </span>
+                  <transition name="slide-text" mode="out-in">
+                    <span :key="currentLanguage + 'reservations.bookingForm.phone'">{{ $t('reservations.bookingForm.phone') }}</span>
+                  </transition>
+                </label>
+                <input 
+                  v-model="bookingForm.phone" 
+                  type="tel" 
+                  class="styled-input"
+                  :placeholder="$t('reservations.bookingForm.phone')"
+                />
+              </div>
+
+              <!-- Submit -->
+              <button type="submit" class="submit-button">
+                <span class="button-text">
+                  <transition name="slide-text" mode="out-in">
+                    <span :key="currentLanguage + 'reservations.bookingForm.submitButton'">{{ $t('reservations.bookingForm.submitButton') }}</span>
+                  </transition>
+                </span>
+                <span class="button-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                    <polyline points="12 5 19 12 12 19"/>
+                  </svg>
+                </span>
+              </button>
+            </form>
           </div>
-          
-          <!-- Private Reservations Tab -->
-          <div v-if="activeTab === 'private'" class="private-tab">
-            <h2 class="main-title">
+        </div>
+
+        <!-- Private Reservations Form -->
+        <div v-else key="private" class="form-container">
+          <div class="form-card form-card-wide">
+            <h2 class="form-title">
               <transition name="slide-text" mode="out-in">
                 <span :key="currentLanguage + 'reservations.privateForm.mainTitle'">{{ $t('reservations.privateForm.mainTitle') }}</span>
               </transition>
             </h2>
             
-            <div class="booking-form private-form">
-              <!-- Row 1: Date and Contact Email -->
+            <form class="reservation-form" @submit.prevent="submitPrivateInquiry">
+              <!-- Row 1: Date & Email -->
               <div class="form-row">
-                <!-- Date Selection -->
-                <div class="form-group form-group-half">
-                  <label>
+                <div class="form-field">
+                  <label class="field-label">
+                    <span class="label-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="3" y="4" width="18" height="18" rx="2"/>
+                        <line x1="3" y1="10" x2="21" y2="10"/>
+                      </svg>
+                    </span>
                     <transition name="slide-text" mode="out-in">
                       <span :key="currentLanguage + 'reservations.bookingForm.date'">{{ $t('reservations.bookingForm.date') }}</span>
                     </transition>
                   </label>
-                  <div class="date-input-container-private" @click="showDatePicker = true">
-                    <span class="date-display">{{ formatPrivateDisplayDate }}</span>
+                  <div class="date-selector" @click="showDatePicker = true">
+                    <span class="selected-value">{{ formatPrivateDisplayDate }}</span>
+                    <span class="field-arrow">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9,18 15,12 9,6"/>
+                      </svg>
+                    </span>
                   </div>
                 </div>
-                
-                <!-- Contact Email -->
-                <div class="form-group form-group-half">
-                  <label>
+
+                <div class="form-field">
+                  <label class="field-label">
+                    <span class="label-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                        <polyline points="22,6 12,13 2,6"/>
+                      </svg>
+                    </span>
                     <transition name="slide-text" mode="out-in">
                       <span :key="currentLanguage + 'reservations.privateForm.email'">{{ $t('reservations.privateForm.email') }}</span>
                     </transition>
@@ -149,129 +237,206 @@
                   <input 
                     v-model="privateForm.email" 
                     type="email" 
-                    class="text-input"
+                    class="styled-input"
                     :placeholder="$t('reservations.privateForm.email')"
                   />
                 </div>
               </div>
-              
-              <!-- Row 2: Event Type, Number of People, and Budget -->
-              <div class="form-row">
-                <!-- Event Type -->
-                <div class="form-group form-group-third">
-                  <label>
+
+              <!-- Row 2: Event Type, People, Budget -->
+              <div class="form-row form-row-triple">
+                <div class="form-field">
+                  <label class="field-label">
+                    <span class="label-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                      </svg>
+                    </span>
                     <transition name="slide-text" mode="out-in">
                       <span :key="currentLanguage + 'reservations.privateForm.eventType'">{{ $t('reservations.privateForm.eventType') }}</span>
                     </transition>
                   </label>
-                  <select v-model="privateForm.eventType" class="time-select">
-                    <option value="">{{ $t('reservations.privateForm.selectEventType') }}</option>
-                    <option v-for="eventType in eventTypes" :key="eventType.value" :value="eventType.value">
-                      {{ eventType.label }}
-                    </option>
-                  </select>
+                  <div class="select-wrapper">
+                    <select v-model="privateForm.eventType" class="styled-select">
+                      <option value="">{{ $t('reservations.privateForm.selectEventType') }}</option>
+                      <option v-for="eventType in eventTypes" :key="eventType.value" :value="eventType.value">
+                        {{ eventType.label }}
+                      </option>
+                    </select>
+                    <span class="select-arrow">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6,9 12,15 18,9"/>
+                      </svg>
+                    </span>
+                  </div>
                 </div>
-                
-                <!-- Number of People -->
-                <div class="form-group form-group-third">
-                  <label>
+
+                <div class="form-field">
+                  <label class="field-label">
+                    <span class="label-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                      </svg>
+                    </span>
                     <transition name="slide-text" mode="out-in">
                       <span :key="currentLanguage + 'reservations.privateForm.peopleRange'">{{ $t('reservations.privateForm.peopleRange') }}</span>
                     </transition>
                   </label>
-                  <select v-model="privateForm.peopleRange" class="time-select">
-                    <option value="">{{ $t('reservations.privateForm.selectPeopleRange') }}</option>
-                    <option v-for="peopleRange in peopleRanges" :key="peopleRange.value" :value="peopleRange.value">
-                      {{ peopleRange.label }}
-                    </option>
-                  </select>
+                  <div class="select-wrapper">
+                    <select v-model="privateForm.peopleRange" class="styled-select">
+                      <option value="">{{ $t('reservations.privateForm.selectPeopleRange') }}</option>
+                      <option v-for="peopleRange in peopleRanges" :key="peopleRange.value" :value="peopleRange.value">
+                        {{ peopleRange.label }}
+                      </option>
+                    </select>
+                    <span class="select-arrow">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6,9 12,15 18,9"/>
+                      </svg>
+                    </span>
+                  </div>
                 </div>
-                
-                <!-- Budget -->
-                <div class="form-group form-group-third">
-                  <label>
+
+                <div class="form-field">
+                  <label class="field-label">
+                    <span class="label-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <line x1="12" y1="1" x2="12" y2="23"/>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                      </svg>
+                    </span>
                     <transition name="slide-text" mode="out-in">
                       <span :key="currentLanguage + 'reservations.privateForm.budget'">{{ $t('reservations.privateForm.budget') }}</span>
                     </transition>
                   </label>
-                  <select v-model="privateForm.budget" class="time-select">
-                    <option value="">{{ $t('reservations.privateForm.selectBudget') }}</option>
-                    <option v-for="budgetRange in budgetRanges" :key="budgetRange.value" :value="budgetRange.value">
-                      {{ budgetRange.label }}
-                    </option>
-                  </select>
+                  <div class="select-wrapper">
+                    <select v-model="privateForm.budget" class="styled-select">
+                      <option value="">{{ $t('reservations.privateForm.selectBudget') }}</option>
+                      <option v-for="budgetRange in budgetRanges" :key="budgetRange.value" :value="budgetRange.value">
+                        {{ budgetRange.label }}
+                      </option>
+                    </select>
+                    <span class="select-arrow">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6,9 12,15 18,9"/>
+                      </svg>
+                    </span>
+                  </div>
                 </div>
               </div>
-              
+
               <!-- Message -->
-              <div class="form-group message-group">
-                <label>
+              <div class="form-field message-field">
+                <label class="field-label">
+                  <span class="label-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                  </span>
                   <transition name="slide-text" mode="out-in">
                     <span :key="currentLanguage + 'reservations.privateForm.message'">{{ $t('reservations.privateForm.message') }}</span>
                   </transition>
                 </label>
                 <textarea 
                   v-model="privateForm.message" 
-                  class="message-input"
+                  class="styled-textarea"
                   :placeholder="$t('reservations.privateForm.messagePlaceholder')"
                   rows="4"
                 ></textarea>
               </div>
-              
-              <!-- Submit Button -->
-              <div class="form-group submit-group">
-                <button type="submit" class="submit-btn">
+
+              <!-- Submit -->
+              <button type="submit" class="submit-button">
+                <span class="button-text">
                   <transition name="slide-text" mode="out-in">
                     <span :key="currentLanguage + 'reservations.privateForm.submitButton'">{{ $t('reservations.privateForm.submitButton') }}</span>
                   </transition>
-                </button>
+                </span>
+                <span class="button-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="22" y1="2" x2="11" y2="13"/>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                  </svg>
+                </span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </transition>
+    </section>
+
+    <!-- Date Picker Modal -->
+    <transition name="modal-fade">
+      <div v-if="showDatePicker" class="modal-overlay" @click="closeDatePicker">
+        <div class="modal-container" @click.stop>
+          <div class="modal-header">
+            <h3 class="modal-title">
+              <transition name="slide-text" mode="out-in">
+                <span :key="currentLanguage + 'reservations.datePicker.selectDate'">{{ $t('reservations.datePicker.selectDate') }}</span>
+              </transition>
+            </h3>
+            <button class="modal-close" @click="closeDatePicker">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+          
+          <div class="calendar">
+            <div class="calendar-nav">
+              <button class="nav-btn" @click="previousMonth">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="15,18 9,12 15,6"/>
+                </svg>
+              </button>
+              <h4 class="calendar-month">{{ currentMonthYear }}</h4>
+              <button class="nav-btn" @click="nextMonth">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="9,18 15,12 9,6"/>
+                </svg>
+              </button>
+            </div>
+            
+            <div class="calendar-grid">
+              <div class="calendar-weekday" v-for="(day, index) in translatedDayHeaders" :key="index">{{ day }}</div>
+              <button 
+                v-for="date in calendarDates" 
+                :key="date.key"
+                type="button"
+                class="calendar-day"
+                :class="{
+                  'other-month': !date.isCurrentMonth,
+                  'unavailable': date.isBooked,
+                  'available': date.isCurrentMonth && !date.isBooked && !date.isPast,
+                  'past': date.isPast,
+                  'selected': (activeTab === 'booking' && selectedDate && selectedDate.getTime() === date.date.getTime()) || 
+                              (activeTab === 'private' && privateForm.date && privateForm.date.getTime() === date.date.getTime())
+                }"
+                @click="selectDate(date)"
+                :disabled="!date.isCurrentMonth || date.isBooked || date.isPast"
+              >
+                {{ date.day }}
+              </button>
+            </div>
+
+            <div class="calendar-legend">
+              <div class="legend-item">
+                <span class="legend-dot available"></span>
+                <span>Available</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot unavailable"></span>
+                <span>Unavailable</span>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    
-    <!-- Date Picker Popup -->
-    <div v-if="showDatePicker" class="date-picker-overlay" @click="closeDatePicker">
-      <div class="date-picker-popup" @click.stop>
-        <div class="date-picker-header">
-          <h3>
-            <transition name="slide-text" mode="out-in">
-              <span :key="currentLanguage + 'reservations.datePicker.selectDate'">{{ $t('reservations.datePicker.selectDate') }}</span>
-            </transition>
-          </h3>
-          <button class="close-btn" @click="closeDatePicker">×</button>
-        </div>
-        
-        <div class="calendar-container">
-          <div class="calendar-header">
-            <button class="nav-button" @click="previousMonth">&lt;</button>
-            <h3 class="month-year">{{ currentMonthYear }}</h3>
-            <button class="nav-button" @click="nextMonth">&gt;</button>
-          </div>
-          
-          <div class="calendar-grid">
-            <div class="day-header" v-for="(day, index) in translatedDayHeaders" :key="index">{{ day }}</div>
-            <div 
-              v-for="date in calendarDates" 
-              :key="date.key"
-              class="calendar-date"
-              :class="{
-                'other-month': !date.isCurrentMonth,
-                'booked': date.isBooked,
-                'available': date.isCurrentMonth && !date.isBooked && !date.isPast,
-                'past': date.isPast,
-                'selected': selectedDate && selectedDate.getTime() === date.date.getTime()
-              }"
-              @click="selectDate(date)"
-            >
-              {{ date.day }}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    </transition>
   </div>
 </template>
 
@@ -287,29 +452,26 @@ export default {
       activeTab: 'booking',
       showDatePicker: false,
       currentDate: new Date(),
-      selectedDate: new Date(2025, 1, 20), // Default to Feb 20, 2025
-      guestCount: 3,
+      selectedDate: new Date(2025, 1, 20),
+      guestCount: 2,
       bookedDates: [
-        // Hard-coded booked dates for demo
-        new Date(2024, 11, 15), // December 15, 2024
-        new Date(2024, 11, 22), // December 22, 2024
-        new Date(2024, 11, 24), // December 24, 2024
-        new Date(2024, 11, 25), // December 25, 2024
-        new Date(2024, 11, 31), // December 31, 2024
-        new Date(2025, 0, 1),   // January 1, 2025
-        new Date(2025, 0, 14),  // January 14, 2025
-        new Date(2025, 0, 20),  // January 20, 2025
-        new Date(2025, 1, 14),  // February 14, 2025
-        new Date(2025, 1, 28),  // February 28, 2025
+        new Date(2024, 11, 15),
+        new Date(2024, 11, 22),
+        new Date(2024, 11, 24),
+        new Date(2024, 11, 25),
+        new Date(2024, 11, 31),
+        new Date(2025, 0, 1),
+        new Date(2025, 0, 14),
+        new Date(2025, 0, 20),
+        new Date(2025, 1, 14),
+        new Date(2025, 1, 28),
       ],
       bookingForm: {
-        time: '20:30',
-        name: '',
-        phone: '',
-        email: ''
+        time: '',
+        phone: ''
       },
       privateForm: {
-        date: new Date(2025, 1, 20), // Default to Feb 20, 2025
+        date: new Date(2025, 1, 20),
         email: '',
         eventType: '',
         message: '',
@@ -320,9 +482,6 @@ export default {
   },
   computed: {
     ...mapGetters(['isDarkMode']),
-    isMobile() {
-      return window.innerWidth <= 768;
-    },
     currentMonthYear() {
       const monthNames = this.$t('reservations.months');
       const month = monthNames[Object.keys(monthNames)[this.currentDate.getMonth()]];
@@ -330,8 +489,13 @@ export default {
     },
     formatDisplayDate() {
       if (!this.selectedDate) return this.$t('reservations.selectDate');
-      const options = { day: 'numeric', month: 'short', year: 'numeric' };
+      const options = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
       return this.selectedDate.toLocaleDateString('en-GB', options);
+    },
+    formatPrivateDisplayDate() {
+      if (!this.privateForm.date) return this.$t('reservations.selectDate');
+      const options = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
+      return this.privateForm.date.toLocaleDateString('en-GB', options);
     },
     translatedDayHeaders() {
       return this.$t('reservations.datePicker.dayHeaders');
@@ -364,11 +528,6 @@ export default {
         label: this.$t(`reservations.privateForm.peopleRanges.${range}`)
       }));
     },
-    formatPrivateDisplayDate() {
-      if (!this.privateForm.date) return this.$t('reservations.selectDate');
-      const options = { day: 'numeric', month: 'short', year: 'numeric' };
-      return this.privateForm.date.toLocaleDateString('en-GB', options);
-    },
     calendarDates() {
       const year = this.currentDate.getFullYear();
       const month = this.currentDate.getMonth();
@@ -381,7 +540,6 @@ export default {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       
-      // Previous month's trailing days
       const prevMonth = new Date(year, month - 1, 0);
       for (let i = firstDayOfWeek - 1; i >= 0; i--) {
         const date = new Date(year, month - 1, prevMonth.getDate() - i);
@@ -395,7 +553,6 @@ export default {
         });
       }
       
-      // Current month's days
       for (let day = 1; day <= daysInMonth; day++) {
         const date = new Date(year, month, day);
         const isBooked = this.bookedDates.some(bookedDate => 
@@ -412,8 +569,7 @@ export default {
         });
       }
       
-      // Next month's leading days
-      const totalCells = 42; // 6 rows × 7 days
+      const totalCells = 42;
       const remainingCells = totalCells - dates.length;
       for (let day = 1; day <= remainingCells; day++) {
         const date = new Date(year, month + 1, day);
@@ -441,7 +597,7 @@ export default {
       if (!dateObj.isCurrentMonth || dateObj.isBooked || dateObj.isPast) return;
       if (this.activeTab === 'booking') {
         this.selectedDate = dateObj.date;
-      } else if (this.activeTab === 'private') {
+      } else {
         this.privateForm.date = dateObj.date;
       }
       this.showDatePicker = false;
@@ -458,916 +614,778 @@ export default {
       if (this.guestCount > 1) {
         this.guestCount--;
       }
+    },
+    submitBooking() {
+      // Handle booking submission
+      console.log('Booking submitted:', {
+        date: this.selectedDate,
+        time: this.bookingForm.time,
+        guests: this.guestCount,
+        phone: this.bookingForm.phone
+      });
+    },
+    submitPrivateInquiry() {
+      // Handle private inquiry submission
+      console.log('Private inquiry submitted:', this.privateForm);
     }
   }
 }
 </script>
 
 <style scoped>
-.reservations-view {
+.reservations-page {
   min-height: 100vh;
   background-color: var(--bg-color);
   color: var(--text-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
 }
 
-.reservations-layout {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
-  max-width: 100vw;
-  width: 100%;
-  height: 100vh;
-}
-
-.reservations-container {
-  width: 100%;
+/* Hero Section */
+.hero-section {
+  padding: 6rem 2rem 3rem;
   text-align: center;
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: var(--bg-color);
-  margin: 0 auto;
-  margin-top: 22px;
-}
-
-.reservations-title {
-  font-size: 2.5rem;
-  font-weight: 300;
-  margin-bottom: 2rem;
-  letter-spacing: 0.3em;
-  text-align: center;
-  width: 100%;
-}
-.private-tab {
-  display: flex;
-  flex-flow: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.tab-navigation {
-  display: flex;
-  gap: 0;
-  margin-bottom: 2rem;
-  width: 100%;
-  border-bottom: 2px solid var(--text-color);
-  max-width: 600px;
-}
-
-.tab-button {
-  background: none;
-  border: none;
-  color: var(--text-color);
-  padding: 1rem 0.5rem;
-  font-size: 1.1rem;
-  font-weight: 300;
-  letter-spacing: 0.1em;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border-bottom: 3px solid transparent;
-  opacity: 0.7;
-  flex: 1;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.tab-button.active {
-  opacity: 1;
-  border-bottom-color: #ca371c;
-  font-weight: 500;
-}
-
-.tab-button:hover {
-  opacity: 1;
-}
-
-.tab-content {
-  width: 100%;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  min-height: 500px;
-  overflow-y: auto;
-  /* Ultra thin scrollbar */
-  scrollbar-width: 0px;
-  scrollbar-color: #ca371c;
-}
-
-/* Webkit scrollbar styling (Chrome, Safari, Edge) */
-.tab-content::-webkit-scrollbar {
-  width: px;
-}
-
-.tab-content::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.tab-content::-webkit-scrollbar-thumb {
-  background-color: rgba(139, 115, 85, 0.3);
-  border-radius: 2px;
-}
-
-.tab-content::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(139, 115, 85, 0.5);
-}
-
-.main-title {
-  font-size: 2rem;
-  font-weight: 400;
-  letter-spacing: 0.3em;
-  color: var(--text-color);
-}
-
-.booking-form {
-  width: 100%;
-  max-width: 400px;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  padding: 2rem;
-}
-
-.form-group {
-  display: flex;
-  align-items: center;
-  padding: 1.5rem 0;
   position: relative;
 }
 
-.form-group::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background-color: var(--text-color);
-  opacity: 0.3;
+.hero-content {
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-.form-group label {
-  font-size: 1.2rem;
-  font-weight: 400;
-  color: var(--text-color);
-  text-align: left;
-  opacity: 1;
-  line-height: 1.5;
-  flex: 1;
-  display: flex;
-  align-items: center;
-}
-
-.date-input-container, .date-input-container-private {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 0;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background-color: transparent;
-  flex: 2;
-}
-
-.date-input-container-private {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background-color: transparent;
-}
-
-.form-group:hover::after {
-  background-color: #ca371c;
-  opacity: 0.8;
-}
-
-.date-display {
-  font-size: 1.2rem;
-  color: var(--text-color);
-  line-height: 1.5;
-}
-
-.date-arrow {
-  font-size: 1.2rem;
-  color: var(--text-color);
-  font-weight: bold;
-}
-
-.time-select {
-  padding: 0;
-  border: none;
-  background-color: transparent;
-  color: var(--text-color);
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  flex: 2;
-  text-align: right;
-  line-height: 1.5;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-}
-
-.time-select:focus {
-  outline: none;
-}
-
-.form-group:has(.time-select:focus)::after {
-  background-color: #ca371c;
-  opacity: 0.8;
-}
-
-.guest-counter {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 0.5rem;
-  flex: 1;
-}
-
-.counter-btn {
-  width: 30px;
-  height: 30px;
-  border: none;
-  background: #ca371c;
-  color: white;
-  border-radius: 50%;
-  font-size: 1.5rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.counter-btn:hover {
-  background-color: #6B5742;
-  color: white;
-}
-
-.guest-count {
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: var(--text-color);
-  flex: 1;
-  text-align: center;
-}
-
-.text-input {
-  padding: 0;
-  border: none;
-  background-color: transparent;
-  color: var(--text-color);
-  font-size: 1.2rem;
-  cursor: text;
-  transition: all 0.3s ease;
-  flex: 2;
-  text-align: right;
-  line-height: 1.5;
-  outline: none;
-}
-
-.text-input::placeholder {
-  color: var(--text-color);
-  opacity: 0.5;
-}
-
-.message-group {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1rem;
-}
-
-.message-group label {
-  text-align: left;
-  flex: none;
-  width: 100%;
-}
-
-.message-input {
-  width: 100%;
-  padding: 1rem;
-  border: 2px solid var(--text-color);
-  background-color: transparent;
-  color: var(--text-color);
-  font-size: 1rem;
-  line-height: 1.5;
-  resize: vertical;
-  transition: all 0.3s ease;
-  font-family: inherit;
-  border-radius: 8px;
-  min-height: 120px;
-}
-
-.message-input::placeholder {
-  color: var(--text-color);
-  opacity: 0.5;
-}
-
-.message-input:focus {
-  outline: none;
-  border-color: #ca371c;
-}
-
-.submit-group {
-  justify-content: center;
-  padding: 3rem 0 1rem 0;
-}
-
-.submit-btn {
-  background-color: #ca371c;
-  color: white;
-  border: none;
-  padding: 1rem 3rem;
-  font-size: 1.1rem;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border-radius: 4px;
+.page-title {
+  font-family: 'Cormorant Garamond', 'Georgia', serif;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 300;
+  letter-spacing: 0.4em;
+  margin: 0;
   text-transform: uppercase;
 }
 
-.submit-btn:hover {
-  background-color: #b52f16;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(202, 55, 28, 0.3);
+.title-accent {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ca371c, transparent);
+  margin: 1.5rem auto 0;
 }
 
-.submit-btn:active {
-  transform: translateY(0);
+/* Main Content */
+.reservations-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem 4rem;
 }
 
-/* Desktop-only private form row layout */
-.private-form {
-  max-width: 800px;
-  width: 100%;
-  gap: 0rem;
-}
-
-.form-row {
+/* Tab Switcher */
+.tab-switcher {
   display: flex;
-  gap: 3rem;
-  width: 100%;
-  margin-bottom: 1rem;
-}
-
-.form-group-half {
-  flex: 1;
-  min-width: 0;
-}
-
-.form-group-third {
-  flex: 1;
-  min-width: 0;
-}
-
-/* Fix form elements in rows */
-.form-row .form-group {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 0.5rem 0;
-}
-
-.form-row .form-group label {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-  text-align: left;
-  width: 100%;
-}
-
-.form-row .text-input,
-.form-row .time-select,
-.form-row .date-input-container-private {
-  width: 100%;
-  text-align: left;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--text-color);
-  opacity: 0.3;
-}
-
-.form-row .text-input:focus,
-.form-row .time-select:focus,
-.form-row .date-input-container-private:hover {
-  border-bottom-color: #ca371c;
-  opacity: 0.8;
-}
-
-/* Remove the original form-group bottom border for row elements */
-.form-row .form-group::after {
-  display: none;
-}
-
-/* Fix date display alignment */
-.form-row .date-display {
-  color: var(--text-color);
-  font-size: 1.2rem;
-}
-
-.coming-soon {
-  font-size: 1.2rem;
-  opacity: 0.7;
-  color: var(--text-color);
-}
-
-/* Date Picker Popup */
-.date-picker-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  align-items: center;
   justify-content: center;
-  z-index: 1000;
+  gap: 1rem;
+  margin-bottom: 3rem;
 }
 
-.date-picker-popup {
-  background: var(--bg-color);
-  border: 2px solid var(--text-color);
-  border-radius: 8px;
-  padding: 2rem;
-  max-width: 500px;
-  width: 90%;
-  max-height: 80vh;
-  overflow-y: auto;
-}
-
-.date-picker-header {
+.tab-pill {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-.date-picker-header h3 {
-  font-size: 1.5rem;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  background: transparent;
+  border: 1px solid var(--text-color);
+  color: var(--text-color);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
   font-weight: 400;
-  color: var(--text-color);
-  margin: 0;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 2rem;
-  color: var(--text-color);
+  letter-spacing: 0.05em;
   cursor: pointer;
-  padding: 0;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50px;
+  opacity: 0.6;
 }
 
-.close-btn:hover {
+.tab-pill:hover {
+  opacity: 1;
+  border-color: #ca371c;
   color: #ca371c;
 }
 
-.calendar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
+.tab-pill.active {
+  opacity: 1;
+  background: #ca371c;
+  border-color: #ca371c;
+  color: white;
 }
 
-.nav-button {
-  background: none;
-  border: 2px solid var(--text-color);
-  color: var(--text-color);
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.tab-icon {
+  width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.nav-button:hover {
-  background-color: var(--text-color);
-  color: var(--bg-color);
+.tab-icon svg {
+  width: 100%;
+  height: 100%;
 }
 
-.month-year {
-  font-size: 1.2rem;
+/* Form Container */
+.form-container {
+  display: flex;
+  justify-content: center;
+}
+
+.form-card {
+  width: 100%;
+  max-width: 500px;
+  background: var(--bg-color);
+  border: 1px solid rgba(202, 55, 28, 0.15);
+  border-radius: 16px;
+  padding: 3rem;
+  box-shadow: 0 4px 40px rgba(0, 0, 0, 0.05);
+}
+
+.form-card-wide {
+  max-width: 800px;
+}
+
+.dark-mode .form-card {
+  box-shadow: 0 4px 40px rgba(255, 255, 255, 0.02);
+}
+
+.form-title {
+  font-family: 'Cormorant Garamond', 'Georgia', serif;
+  font-size: 1.8rem;
   font-weight: 400;
-  margin: 0;
+  letter-spacing: 0.2em;
+  margin: 0 0 2.5rem;
+  text-align: center;
   color: var(--text-color);
 }
 
-.calendar-grid {
+/* Form Styles */
+.reservation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-row {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 1px;
-  background-color: rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
 }
 
-.day-header {
-  background-color: var(--bg-color);
-  padding: 0.8rem 0.5rem;
-  text-align: center;
-  font-weight: 600;
-  font-size: 0.9rem;
-  opacity: 0.7;
+.form-row-triple {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.field-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
   color: var(--text-color);
+  opacity: 0.8;
 }
 
-.calendar-date {
-  background-color: var(--bg-color);
-  padding: 0.8rem 0.5rem;
-  text-align: center;
+.label-icon {
+  width: 16px;
+  height: 16px;
+  opacity: 0.6;
+}
+
+.label-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Date Selector */
+.date-selector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background: transparent;
+  border: 1px solid rgba(202, 55, 28, 0.2);
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
-  min-height: 40px;
+}
+
+.date-selector:hover {
+  border-color: #ca371c;
+}
+
+.selected-value {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  color: var(--text-color);
+}
+
+.field-arrow {
+  width: 16px;
+  height: 16px;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+.field-arrow svg {
+  width: 100%;
+  height: 100%;
+}
+
+.date-selector:hover .field-arrow {
+  opacity: 1;
+  color: #ca371c;
+  transform: translateX(2px);
+}
+
+/* Select Wrapper */
+.select-wrapper {
+  position: relative;
+}
+
+.styled-select {
+  width: 100%;
+  padding: 1rem 2.5rem 1rem 1.25rem;
+  background: transparent;
+  border: 1px solid rgba(202, 55, 28, 0.2);
+  border-radius: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  color: var(--text-color);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: all 0.3s ease;
+}
+
+.styled-select:hover,
+.styled-select:focus {
+  border-color: #ca371c;
+  outline: none;
+}
+
+.styled-select option {
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+.select-arrow {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.select-arrow svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Input */
+.styled-input {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  background: transparent;
+  border: 1px solid rgba(202, 55, 28, 0.2);
+  border-radius: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  color: var(--text-color);
+  transition: all 0.3s ease;
+}
+
+.styled-input:hover,
+.styled-input:focus {
+  border-color: #ca371c;
+  outline: none;
+}
+
+.styled-input::placeholder {
+  color: var(--text-color);
+  opacity: 0.4;
+}
+
+/* Textarea */
+.styled-textarea {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  background: transparent;
+  border: 1px solid rgba(202, 55, 28, 0.2);
+  border-radius: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  color: var(--text-color);
+  resize: vertical;
+  min-height: 120px;
+  transition: all 0.3s ease;
+}
+
+.styled-textarea:hover,
+.styled-textarea:focus {
+  border-color: #ca371c;
+  outline: none;
+}
+
+.styled-textarea::placeholder {
+  color: var(--text-color);
+  opacity: 0.4;
+}
+
+/* Guest Stepper */
+.guests-field {
+  align-items: stretch;
+}
+
+.guest-stepper {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.9rem;
-  color: var(--text-color);
+  gap: 1.5rem;
+  padding: 0.75rem;
+  background: transparent;
+  border: 1px solid rgba(202, 55, 28, 0.2);
+  border-radius: 8px;
 }
 
-.calendar-date.other-month {
+.stepper-btn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--text-color);
+  border-radius: 50%;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.stepper-btn:hover:not(:disabled) {
+  background: #ca371c;
+  border-color: #ca371c;
+  color: white;
+  transform: scale(1.05);
+}
+
+.stepper-btn:disabled {
   opacity: 0.3;
   cursor: not-allowed;
 }
 
-.calendar-date.past {
-  opacity: 0.4;
-  cursor: not-allowed;
-  text-decoration: line-through;
+.stepper-btn svg {
+  width: 20px;
+  height: 20px;
 }
 
-.calendar-date.booked {
-  background-color: #ff6b6b;
+.guest-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+}
+
+.guest-number {
+  font-family: 'Cormorant Garamond', 'Georgia', serif;
+  font-size: 2.5rem;
+  font-weight: 300;
+  line-height: 1;
+  color: #ca371c;
+}
+
+.guest-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  margin-top: 0.25rem;
+}
+
+/* Submit Button */
+.submit-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 1.25rem 2rem;
+  margin-top: 1rem;
+  background: #ca371c;
+  border: none;
+  border-radius: 8px;
   color: white;
-  cursor: not-allowed;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.calendar-date.available:hover {
-  background-color: #ca371c;
-  color: white;
+.submit-button:hover {
+  background: #a82e17;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(202, 55, 28, 0.3);
 }
 
-.calendar-date.selected {
-  background-color: #ca371c;
-  color: white;
-  font-weight: bold;
+.button-icon {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
 }
 
-.mobile-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
-  display: none;
-}
-
-.background-image {
+.button-icon svg {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center;
 }
 
-.background-overlay {
-  position: absolute;
+.submit-button:hover .button-icon {
+  transform: translateX(4px);
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 1rem;
 }
 
-/* Responsive Design */
+.modal-container {
+  background: var(--bg-color);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 420px;
+  max-height: 90vh;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 1.5rem 1rem;
+  border-bottom: 1px solid rgba(202, 55, 28, 0.1);
+}
+
+.modal-title {
+  font-family: 'Cormorant Garamond', 'Georgia', serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  margin: 0;
+}
+
+.modal-close {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+  background: rgba(202, 55, 28, 0.1);
+  color: #ca371c;
+}
+
+.modal-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Calendar */
+.calendar {
+  padding: 1.5rem;
+}
+
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.nav-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--text-color);
+  border-radius: 50%;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+  background: var(--text-color);
+  color: var(--bg-color);
+}
+
+.nav-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.calendar-month {
+  font-family: 'Cormorant Garamond', 'Georgia', serif;
+  font-size: 1.25rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar-weekday {
+  padding: 0.75rem 0.25rem;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.calendar-day.other-month {
+  opacity: 0.2;
+  cursor: default;
+}
+
+.calendar-day.past {
+  opacity: 0.3;
+  cursor: default;
+  text-decoration: line-through;
+}
+
+.calendar-day.unavailable {
+  background: rgba(202, 55, 28, 0.15);
+  color: #ca371c;
+  cursor: not-allowed;
+}
+
+.calendar-day.available:hover {
+  background: rgba(202, 55, 28, 0.1);
+  color: #ca371c;
+}
+
+.calendar-day.selected {
+  background: #ca371c;
+  color: white;
+  font-weight: 600;
+}
+
+.calendar-legend {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(202, 55, 28, 0.1);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+}
+
+.legend-dot.available {
+  background: var(--text-color);
+  opacity: 0.3;
+}
+
+.legend-dot.unavailable {
+  background: rgba(202, 55, 28, 0.3);
+}
+
+/* Animations */
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fade-slide-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: all 0.3s ease;
+}
+
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+  opacity: 0;
+}
+
+.modal-fade-enter-from .modal-container,
+.modal-fade-leave-to .modal-container {
+  transform: scale(0.95) translateY(20px);
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-  .mobile-background {
-    display: none;
+  .hero-section {
+    padding: 5rem 1.5rem 2rem;
   }
-  
-  .reservations-view {
-    height: 100vh;
-    overflow: hidden;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: var(--bg-color);
+
+  .reservations-content {
+    padding: 0 1rem 3rem;
   }
-  
-  .reservations-layout {
-    position: relative;
-    z-index: 2;
-    height: 100vh;
-  }
-  
-  .reservations-container {
-    background-color: var(--bg-color);
-    padding: 0;
-    height: 100vh;
-    margin-top: 0;
-    max-width: 100%;
-    justify-content: flex-start;
-  }
-  
-  .reservations-title {
-    color: var(--text-color);
-    text-shadow: none;
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    margin-top: 2rem;
-    padding: 0 1rem;
-  }
-  
-  .tab-navigation {
-    border: none;
-    border-bottom: none;
-    margin-bottom: 1rem;
-    padding: 0 1rem;
-    gap: 0.8rem;
-    display: flex;
+
+  .tab-switcher {
     flex-direction: column;
+    gap: 0.75rem;
   }
-  
-  .tab-button {
-    background: transparent;
-    border: 2px solid var(--text-color);
-    color: var(--text-color);
-    backdrop-filter: none;
-    text-shadow: none;
-    padding: 1rem 1.5rem;
-    font-size: 1rem;
-    border-radius: 25px;
-    transition: all 0.3s ease;
-    font-weight: 400;
-    letter-spacing: 0.05em;
-    opacity: 0.7;
+
+  .tab-pill {
     width: 100%;
-    text-align: center;
-    white-space: nowrap;
-    overflow: visible;
-  }
-  
-  .tab-button.active {
-    background: var(--text-color);
-    border-color: var(--text-color);
-    color: var(--bg-color);
-    text-shadow: none;
-    font-weight: 500;
-    transform: scale(1.02);
-    opacity: 1;
-  }
-  
-  .tab-button:hover {
-    opacity: 1;
-    transform: translateY(-1px);
-  }
-  
-  .tab-button.active:hover {
-    transform: scale(1.02) translateY(-1px);
-  }
-  
-  .tab-content {
-    flex: 1;
-    height: calc(100vh - 200px);
-    overflow-y: auto;
-    /* Ultra thin scrollbar for mobile */
-    scrollbar-width: thin;
-    scrollbar-color: rgba(139, 115, 85, 0.2) transparent;
-  }
-  
-  /* Mobile webkit scrollbar styling */
-  .tab-content::-webkit-scrollbar {
-    width: 2px;
-  }
-  
-  .tab-content::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  
-  .tab-content::-webkit-scrollbar-thumb {
-    background-color: rgba(139, 115, 85, 0.2);
-    border-radius: 1px;
-  }
-  
-  .main-title {
-    color: var(--text-color);
-    text-shadow: none;
-    font-size: 1.8rem;
-  }
-  
-  .booking-form {
-    background: var(--bg-color);
-    backdrop-filter: none;
-    padding: 2rem 1.5rem;
-    margin: 0;
-    border-radius: 0;
-    width: 100%;
-    max-width: 100%;
-    min-height: calc(100vh - 250px);
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    gap: 2.5rem;
-  }
-  
-  .form-group {
-    padding: 2rem 0;
-  }
-  
-  .form-group label {
-    color: var(--text-color);
-    font-size: 1.1rem;
-    font-weight: 500;
-  }
-  
-  .form-group::after {
-    background-color: var(--text-color);
-    opacity: 0.3;
-  }
-  
-  .form-group:hover::after {
-    background-color: #ca371c;
-    opacity: 0.8;
-  }
-  
-  .date-input-container,
-  .time-select {
-    color: var(--text-color);
-    font-size: 1.1rem;
-  }
-  
-  .counter-btn {
-    background: #8B7355;
-    color: white;
-    border: none;
-    width: 40px;
-    height: 40px;
-    font-size: 1.4rem;
-  }
-  
-  .guest-count {
-    color: var(--text-color);
-    font-size: 1.4rem;
-  }
-  
-  .text-input {
-    color: var(--text-color);
-    font-size: 1.1rem;
-  }
-  
-  .text-input::placeholder {
-    color: var(--text-color);
-    opacity: 0.5;
-  }
-  
-  .message-input {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    border-color: var(--text-color);
-  }
-  
-  .message-input::placeholder {
-    color: var(--text-color);
-    opacity: 0.5;
-  }
-  
-  .message-input:focus {
-    border-color: #ca371c;
-  }
-  
-  .submit-btn {
-    background-color: #ca371c;
-    color: white;
-    padding: 1.2rem 3rem;
-    font-size: 1rem;
-  }
-  
-  .submit-btn:hover {
-    background-color: #b52f16;
-    transform: translateY(-1px);
-  }
-  
-  /* Mobile override for private form - single column layout */
-  .private-form {
-    max-width: 100%;
-  }
-  
-  .form-row {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-  
-  .form-group-half,
-  .form-group-third {
-    flex: none;
-  }
-  
-  .coming-soon {
-    color: var(--text-color);
-    text-shadow: none;
-    margin-top: 2rem;
-    font-size: 1.3rem;
-  }
-  
-  .date-picker-popup {
-    width: 95%;
-    margin: 1rem auto;
-    padding: 1rem;
-    max-width: none;
-    max-height: 85vh;
-    overflow-y: auto;
-  }
-  
-  .calendar-grid {
-    gap: 1px;
-    background-color: rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-  }
-  
-  .day-header {
-    background-color: var(--bg-color);
-    padding: 0.8rem 0.2rem;
-    text-align: center;
-    font-weight: 600;
-    font-size: 0.85rem;
-    color: var(--text-color);
-    opacity: 0.8;
-  }
-  
-  .calendar-date {
-    background-color: var(--bg-color);
-    padding: 1.2rem 0.2rem;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    min-height: 50px;
-    display: flex;
-    align-items: center;
     justify-content: center;
-    font-size: 1.1rem;
-    color: var(--text-color);
   }
-  
-  .day-header {
-    background-color: var(--bg-color);
-    padding: 1rem 0.2rem;
-    text-align: center;
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: var(--text-color);
-    opacity: 0.8;
+
+  .form-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .form-row,
+  .form-row-triple {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .form-title {
+    font-size: 1.5rem;
+    letter-spacing: 0.15em;
+  }
+
+  .guest-stepper {
+    gap: 1rem;
+  }
+
+  .stepper-btn {
+    width: 48px;
+    height: 48px;
+  }
+
+  .guest-number {
+    font-size: 2rem;
+  }
+
+  .modal-container {
+    max-height: 85vh;
+  }
+
+  .calendar {
+    padding: 1rem;
+  }
+
+  .calendar-day {
+    font-size: 0.85rem;
   }
 }
 
 @media (max-width: 480px) {
-  .reservations-title {
-    font-size: 1.6rem;
-    margin-bottom: 0.5rem;
+  .hero-section {
+    padding: 4rem 1rem 1.5rem;
   }
-  
-  .main-title {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
+
+  .page-title {
+    letter-spacing: 0.2em;
   }
-  
-  .booking-form {
-    padding: 1.5rem;
-    gap: 1.2rem;
+
+  .form-card {
+    padding: 1.5rem 1rem;
+    border-radius: 12px;
   }
-  
-  .counter-btn {
-    width: 45px;
-    height: 45px;
+
+  .form-title {
     font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .styled-select,
+  .styled-input,
+  .date-selector {
+    padding: 0.875rem 1rem;
+  }
+
+  .submit-button {
+    padding: 1rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .calendar-legend {
+    gap: 1rem;
   }
 }
-</style> 
+</style>
