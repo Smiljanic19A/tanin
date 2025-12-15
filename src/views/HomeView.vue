@@ -52,76 +52,55 @@
       
       <div class="contact-info-container">
         <div class="contact-grid">
-          <!-- Location Information -->
-          <div class="contact-item location-info">
-            <h3 class="contact-title">
-              <transition name="slide-text" mode="out-in">
-                <span :key="currentLanguage + 'home.contactAddress'" v-html="$t('home.contactAddress')"></span>
-              </transition>
-            </h3>
-            <p class="contact-link">
-              <transition name="slide-text" mode="out-in">
-                <span :key="currentLanguage + 'home.contactDirections'"><a href="https://www.google.com/maps/dir//TANNIN+Wine+Bistro,+%C5%BDor%C5%BEa+Klemansoa+27v,+Beograd+11158/@44.824628,20.4706631,21z/data=!4m17!1m7!3m6!1s0x475a7b002abc02f5:0x344219103762091!2sTANNIN+Wine+Bistro!8m2!3d44.8246407!4d20.4709404!16s%2Fg%2F11y3mx_0d8!4m8!1m0!1m5!1m1!1s0x475a7b002abc02f5:0x344219103762091!2m2!1d20.4709493!2d44.8246464!3e2?entry=ttu&g_ep=EgoyMDI1MDcyMS4wIKXMDSoASAFQAw%3D%3D" 
-                  target="_blank">{{ $t('home.contactDirections') }}</a></span>
-              </transition>
-            </p>
+          <!-- Top Row: Address and Hours -->
+          <div class="contact-row-top">
+            <!-- Location Information -->
+            <div class="contact-item location-info">
+              <h3 class="contact-title">
+                <transition name="slide-text" mode="out-in">
+                  <span :key="currentLanguage + 'home.contactAddress'" v-html="$t('home.contactAddress')"></span>
+                </transition>
+              </h3>
+              <p class="contact-link">
+                <transition name="slide-text" mode="out-in">
+                  <span :key="currentLanguage + 'home.contactDirections'"><a href="https://www.google.com/maps/dir//TANNIN+Wine+Bistro,+%C5%BDor%C5%BEa+Klemansoa+27v,+Beograd+11158/@44.824628,20.4706631,21z/data=!4m17!1m7!3m6!1s0x475a7b002abc02f5:0x344219103762091!2sTANNIN+Wine+Bistro!8m2!3d44.8246407!4d20.4709404!16s%2Fg%2F11y3mx_0d8!4m8!1m0!1m5!1m1!1s0x475a7b002abc02f5:0x344219103762091!2m2!1d20.4709493!2d44.8246464!3e2?entry=ttu&g_ep=EgoyMDI1MDcyMS4wIKXMDSoASAFQAw%3D%3D" 
+                    target="_blank">{{ $t('home.contactDirections') }}</a></span>
+                </transition>
+              </p>
+            </div>
+            
+            <!-- Opening Hours -->
+            <div class="contact-item hours-info">
+              <h3 class="contact-title">
+                <transition name="slide-text" mode="out-in">
+                  <span :key="currentLanguage + 'home.openingHours'">{{ $t('home.openingHours') }}</span>
+                </transition>
+              </h3>
+              <p class="hours-text">
+                <transition name="slide-text" mode="out-in">
+                  <span :key="currentLanguage + 'home.openingDays1'">{{ $t('home.openingDays1') }}</span>
+                </transition>
+              </p>
+              <p class="hours-text">
+                <transition name="slide-text" mode="out-in">
+                  <span :key="currentLanguage + 'home.openingDays2'">{{ $t('home.openingDays2') }}</span>
+                </transition>
+              </p>
+            </div>
           </div>
           
-          <!-- Opening Hours -->
-          <div class="contact-item hours-info">
-            <h3 class="contact-title">
-              <transition name="slide-text" mode="out-in">
-                <span :key="currentLanguage + 'home.openingHours'">{{ $t('home.openingHours') }}</span>
-              </transition>
-            </h3>
-            <p class="hours-text">
-              <transition name="slide-text" mode="out-in">
-                <span :key="currentLanguage + 'home.openingDays'">{{ $t('home.openingDays') }}</span>
-              </transition>
-            </p>
-            <p class="hours-time">
-              <transition name="slide-text" mode="out-in">
-                <span :key="currentLanguage + 'home.openingTime'">{{ $t('home.openingTime') }}</span>
-              </transition>
-            </p>
-          </div>
-          
-          <!-- Contact Information -->
-          <div class="contact-item contact-details">
-            <h3 class="contact-title">
-              <transition name="slide-text" mode="out-in">
-                <span :key="currentLanguage + 'home.contact'">{{ $t('home.contact') }}</span>
-              </transition>
-            </h3>
-            <p class="contact-text">
-              <transition name="slide-text" mode="out-in">
-                <span :key="currentLanguage + 'home.phone'">{{ $t('home.phone') }}</span>
-              </transition>
-            </p>
-            <p class="contact-text">
-              <transition name="slide-text" mode="out-in">
-                <span :key="currentLanguage + 'home.whatsapp'">{{ $t('home.whatsapp') }}</span>
-              </transition>
-            </p>
-          </div>
-          
-          <!-- Additional Contact -->
-          <div class="contact-item contact-details-alt">
-            <h3 class="contact-title">
-              <transition name="slide-text" mode="out-in">
-                <span :key="currentLanguage + 'home.contact2'">{{ $t('home.contact') }}</span>
-              </transition>
-            </h3>
-            <p class="contact-text">
-              <transition name="slide-text" mode="out-in">
-                <span :key="currentLanguage + 'home.phone2'">{{ $t('home.phone') }}</span>
-              </transition>
-            </p>
-            <p class="contact-text">
-              <transition name="slide-text" mode="out-in">
-                <span :key="currentLanguage + 'home.whatsapp2'">{{ $t('home.whatsapp') }}</span>
-              </transition>
-            </p>
+          <!-- Bottom Row: Contact (Centered) -->
+          <div class="contact-row-bottom">
+            <div class="contact-item contact-details">
+              <h3 class="contact-title">
+                <transition name="slide-text" mode="out-in">
+                  <span :key="currentLanguage + 'home.contact'">{{ $t('home.contact') }}</span>
+                </transition>
+              </h3>
+              <p class="contact-text phone-number">
+                <a href="tel:+381662424021">+381 66 242 402</a>
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -358,17 +337,22 @@ export default {
 }
 
 .contact-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: auto;
-  gap: 1.5rem 6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
   text-align: center;
   max-width: 900px;
   margin: 0 auto;
+}
+
+.contact-row-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
   position: relative;
 }
 
-.contact-grid::before {
+.contact-row-top::before {
   content: '';
   position: absolute;
   left: 50%;
@@ -378,6 +362,13 @@ export default {
   background-color: var(--text-color);
   opacity: 0.2;
   transform: translateX(-50%);
+}
+
+.contact-row-bottom {
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(202, 55, 28, 0.15);
 }
 
 .contact-item {
@@ -462,6 +453,22 @@ export default {
   word-wrap: break-word;
 }
 
+.contact-text.phone-number {
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+
+.contact-text.phone-number a {
+  color: var(--text-color);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.contact-text.phone-number a:hover {
+  color: #ca371c;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .logo-image {
@@ -529,18 +536,25 @@ export default {
   }
   
   .contact-grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
     gap: 1.5rem;
     max-width: 100%;
   }
   
-  .contact-item {
-    padding: 0.75rem;
+  .contact-row-top {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
   
-  .contact-grid::before {
+  .contact-row-top::before {
     display: none;
+  }
+  
+  .contact-row-bottom {
+    padding-top: 0.75rem;
+  }
+  
+  .contact-item {
+    padding: 0.75rem;
   }
   
   .contact-title {

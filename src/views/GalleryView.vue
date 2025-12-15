@@ -37,20 +37,20 @@
           v-for="(image, index) in eventsImages" 
           :key="`event-${index}`"
           class="grid-item"
-          :class="getItemClass(index, 'events')"
+          :class="[getItemClass(index, 'events'), { 'loaded': loadedImages[`event-${index}`] }]"
           @click="openLightbox(eventsImages, index)"
         >
           <div class="image-container">
-            <img :src="image" :alt="`Event ${index + 1}`" loading="lazy">
+            <div class="image-placeholder"></div>
+            <img 
+              :src="image" 
+              :alt="`Event ${index + 1}`"
+              loading="lazy"
+              decoding="async"
+              @load="onImageLoad(`event-${index}`)"
+            >
             <div class="image-overlay">
-              <div class="overlay-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                  <line x1="11" y1="8" x2="11" y2="14"></line>
-                  <line x1="8" y1="11" x2="14" y2="11"></line>
-                </svg>
-              </div>
+              <div class="overlay-icon">+</div>
             </div>
           </div>
         </div>
@@ -85,86 +85,75 @@
           v-for="(image, index) in galleryImages" 
           :key="`gallery-${index}`"
           class="grid-item"
-          :class="getItemClass(index, 'gallery')"
+          :class="[getItemClass(index, 'gallery'), { 'loaded': loadedImages[`gallery-${index}`] }]"
           @click="openLightbox(galleryImages, index)"
         >
           <div class="image-container">
-            <img :src="image" :alt="`Gallery ${index + 1}`" loading="lazy">
+            <div class="image-placeholder"></div>
+            <img 
+              :src="image" 
+              :alt="`Gallery ${index + 1}`"
+              loading="lazy"
+              decoding="async"
+              @load="onImageLoad(`gallery-${index}`)"
+            >
             <div class="image-overlay">
-              <div class="overlay-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                  <line x1="11" y1="8" x2="11" y2="14"></line>
-                  <line x1="8" y1="11" x2="14" y2="11"></line>
-                </svg>
-              </div>
+              <div class="overlay-icon">+</div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Lightbox -->
-    <transition name="fade">
+    <!-- Lightbox - Only render when open -->
+    <teleport to="body">
       <div v-if="lightboxOpen" class="lightbox-overlay" @click="closeLightbox">
         <div class="lightbox-container" @click.stop>
-          <button class="lightbox-close" @click="closeLightbox">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
+          <button class="lightbox-close" @click="closeLightbox" aria-label="Close">×</button>
           
           <button 
             class="lightbox-nav lightbox-prev" 
             @click="prevImage"
-            v-if="currentImageIndex > 0"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
-          </button>
+            v-show="currentImageIndex > 0"
+            aria-label="Previous"
+          >‹</button>
           
           <div class="lightbox-image-wrapper">
-            <transition name="slide-fade" mode="out-in">
-              <img 
-                :key="currentImageIndex"
-                :src="currentImages[currentImageIndex]" 
-                :alt="`Image ${currentImageIndex + 1}`"
-                class="lightbox-image"
-              >
-            </transition>
+            <div v-if="!lightboxImageLoaded" class="lightbox-loader"></div>
+            <img 
+              :src="currentImages[currentImageIndex]" 
+              :alt="`Image ${currentImageIndex + 1}`"
+              class="lightbox-image"
+              :class="{ 'visible': lightboxImageLoaded }"
+              @load="onLightboxImageLoad"
+            >
           </div>
           
           <button 
             class="lightbox-nav lightbox-next" 
             @click="nextImage"
-            v-if="currentImageIndex < currentImages.length - 1"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
-          </button>
+            v-show="currentImageIndex < currentImages.length - 1"
+            aria-label="Next"
+          >›</button>
 
           <div class="lightbox-counter">
             {{ currentImageIndex + 1 }} / {{ currentImages.length }}
           </div>
 
           <div class="lightbox-thumbnails">
-            <div 
+            <button 
               v-for="(img, idx) in currentImages"
               :key="`thumb-${idx}`"
               class="lightbox-thumb"
               :class="{ 'active': idx === currentImageIndex }"
-              @click="currentImageIndex = idx"
+              @click="goToImage(idx)"
             >
-              <img :src="img" :alt="`Thumbnail ${idx + 1}`">
-            </div>
+              <img :src="img" :alt="`Thumbnail ${idx + 1}`" loading="lazy">
+            </button>
           </div>
         </div>
       </div>
-    </transition>
+    </teleport>
   </div>
 </template>
 
@@ -177,14 +166,12 @@ export default {
   mixins: [translationMixin],
   data() {
     return {
-      // Events grid uses grid1 images (wine-themed)
       eventsImages: [
         '/grid1/wine_1.JPG',
         '/grid1/wine_2.jpg',
         '/grid1/wine_3.JPG',
         '/grid1/IMG_9671.JPG'
       ],
-      // Main gallery uses grid2 images (food/atmosphere)
       galleryImages: [
         '/grid2/food_1.jpg',
         '/grid2/food_2.jpg',
@@ -193,7 +180,9 @@ export default {
         '/grid2/food_5.jpg',
         '/grid2/food_6.jpg'
       ],
+      loadedImages: {},
       lightboxOpen: false,
+      lightboxImageLoaded: false,
       currentImageIndex: 0,
       currentImages: []
     }
@@ -206,7 +195,6 @@ export default {
   },
   methods: {
     getItemClass(index, type) {
-      // Create varied heights for Pinterest effect
       if (type === 'events') {
         const patterns = ['tall', 'short', 'medium', 'tall']
         return patterns[index % patterns.length]
@@ -215,27 +203,57 @@ export default {
         return patterns[index % patterns.length]
       }
     },
+    onImageLoad(key) {
+      this.loadedImages[key] = true
+    },
     openLightbox(images, index) {
       this.currentImages = images
       this.currentImageIndex = index
+      this.lightboxImageLoaded = false
       this.lightboxOpen = true
       document.body.style.overflow = 'hidden'
       document.addEventListener('keydown', this.handleKeydown)
+      
+      // Preload adjacent images
+      this.preloadAdjacentImages(index)
     },
     closeLightbox() {
       this.lightboxOpen = false
       document.body.style.overflow = ''
       document.removeEventListener('keydown', this.handleKeydown)
     },
+    onLightboxImageLoad() {
+      this.lightboxImageLoaded = true
+    },
+    goToImage(idx) {
+      if (idx === this.currentImageIndex) return
+      this.lightboxImageLoaded = false
+      this.currentImageIndex = idx
+      this.preloadAdjacentImages(idx)
+    },
     nextImage() {
       if (this.currentImageIndex < this.currentImages.length - 1) {
+        this.lightboxImageLoaded = false
         this.currentImageIndex++
+        this.preloadAdjacentImages(this.currentImageIndex)
       }
     },
     prevImage() {
       if (this.currentImageIndex > 0) {
+        this.lightboxImageLoaded = false
         this.currentImageIndex--
+        this.preloadAdjacentImages(this.currentImageIndex)
       }
+    },
+    preloadAdjacentImages(currentIdx) {
+      // Preload next and previous images
+      const toPreload = [currentIdx - 1, currentIdx + 1]
+      toPreload.forEach(idx => {
+        if (idx >= 0 && idx < this.currentImages.length) {
+          const img = new Image()
+          img.src = this.currentImages[idx]
+        }
+      })
     },
     handleKeydown(event) {
       if (event.key === 'Escape') {
@@ -262,114 +280,85 @@ export default {
   width: 100%;
   min-height: 100vh;
   background-color: var(--bg-color);
-  transition: var(--transition);
 }
 
 /* Hero Section */
 .gallery-hero {
   width: 100%;
-  min-height: 40vh;
+  min-height: 35vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 6rem 2rem 4rem;
-  background: linear-gradient(
-    180deg,
-    var(--bg-color) 0%,
-    var(--bg-color) 100%
-  );
-  position: relative;
-  overflow: hidden;
-}
-
-.gallery-hero::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(202, 55, 28, 0.03) 0%,
-    transparent 70%
-  );
-  pointer-events: none;
+  padding: 5rem 2rem 3rem;
 }
 
 .hero-content {
   text-align: center;
   max-width: 800px;
-  position: relative;
-  z-index: 1;
 }
 
 .gallery-title {
   font-family: 'Corinthia', cursive;
-  font-size: clamp(3.5rem, 8vw, 6rem);
+  font-size: clamp(3rem, 8vw, 5.5rem);
   font-weight: 400;
   color: var(--text-color);
-  margin: 0 0 1rem 0;
-  letter-spacing: 0.02em;
+  margin: 0 0 0.5rem 0;
   line-height: 1.1;
 }
 
 .gallery-subtitle {
   font-family: 'Montserrat', sans-serif;
-  font-size: clamp(1rem, 2vw, 1.2rem);
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
   font-weight: 300;
   color: var(--text-color);
-  opacity: 0.8;
+  opacity: 0.7;
   margin: 0;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
 }
 
 /* Section Styling */
 .gallery-section {
-  padding: 4rem 2rem;
-  max-width: 1600px;
+  padding: 3rem 2rem;
+  max-width: 1500px;
   margin: 0 auto;
 }
 
 .section-header {
   text-align: center;
-  margin-bottom: 3rem;
-  position: relative;
+  margin-bottom: 2.5rem;
 }
 
 .section-accent {
-  width: 60px;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, #ca371c, transparent);
-  margin: 0 auto 1.5rem;
-  border-radius: 2px;
+  width: 50px;
+  height: 2px;
+  background: #ca371c;
+  margin: 0 auto 1.25rem;
 }
 
 .section-title {
   font-family: 'Montserrat', sans-serif;
-  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-size: clamp(1.3rem, 2.5vw, 1.75rem);
   font-weight: 600;
   color: var(--text-color);
-  margin: 0 0 1rem 0;
+  margin: 0 0 0.75rem 0;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.12em;
 }
 
 .section-description {
   font-family: 'Montserrat', sans-serif;
-  font-size: clamp(0.9rem, 1.5vw, 1rem);
+  font-size: clamp(0.85rem, 1.3vw, 0.95rem);
   font-weight: 300;
   color: var(--text-color);
-  opacity: 0.7;
-  margin: 0;
-  max-width: 600px;
+  opacity: 0.65;
   margin: 0 auto;
+  max-width: 500px;
 }
 
-/* Pinterest/Masonry Grid */
+/* Pinterest Grid - GPU accelerated */
 .pinterest-grid {
   column-count: 4;
-  column-gap: 1.25rem;
+  column-gap: 1rem;
   width: 100%;
 }
 
@@ -383,28 +372,18 @@ export default {
 
 .grid-item {
   break-inside: avoid;
-  margin-bottom: 1.25rem;
-  border-radius: 16px;
+  margin-bottom: 1rem;
+  border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
   position: relative;
-  background: var(--bg-color);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.dark-mode .grid-item {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  background: rgba(128, 128, 128, 0.1);
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .grid-item:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 20px 40px rgba(202, 55, 28, 0.2);
-  z-index: 10;
-}
-
-.dark-mode .grid-item:hover {
-  box-shadow: 0 20px 40px rgba(202, 55, 28, 0.3);
+  transform: translateY(-4px) translateZ(0);
 }
 
 .image-container {
@@ -413,15 +392,31 @@ export default {
   overflow: hidden;
 }
 
+/* Placeholder for loading */
+.image-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(128,128,128,0.15) 0%, rgba(128,128,128,0.05) 100%);
+  z-index: 1;
+}
+
+.grid-item.loaded .image-placeholder {
+  display: none;
+}
+
 .image-container img {
   width: 100%;
   height: auto;
   display: block;
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-.grid-item:hover .image-container img {
-  transform: scale(1.08);
+.grid-item.loaded .image-container img {
+  opacity: 1;
 }
 
 .image-overlay {
@@ -430,17 +425,13 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    rgba(0, 0, 0, 0.1) 50%,
-    rgba(0, 0, 0, 0.6) 100%
-  );
+  background: rgba(0, 0, 0, 0.4);
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 2;
 }
 
 .grid-item:hover .image-overlay {
@@ -449,17 +440,12 @@ export default {
 
 .overlay-icon {
   color: white;
-  transform: scale(0.8);
-  opacity: 0;
-  transition: all 0.3s ease 0.1s;
+  font-size: 2.5rem;
+  font-weight: 200;
+  line-height: 1;
 }
 
-.grid-item:hover .overlay-icon {
-  transform: scale(1);
-  opacity: 1;
-}
-
-/* Height variations for Pinterest effect */
+/* Height variations */
 .grid-item.tall .image-container img {
   aspect-ratio: 3/4;
   object-fit: cover;
@@ -480,58 +466,49 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2rem;
-  padding: 3rem 2rem;
-  max-width: 600px;
+  gap: 1.5rem;
+  padding: 2rem;
+  max-width: 500px;
   margin: 0 auto;
 }
 
 .divider-line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(202, 55, 28, 0.3), transparent);
+  background: rgba(202, 55, 28, 0.25);
 }
 
 .divider-logo {
-  width: 50px;
+  width: 40px;
   height: auto;
-  opacity: 0.6;
-  transition: all 0.3s ease;
+  opacity: 0.5;
 }
 
-.divider-logo:hover {
-  opacity: 1;
-  transform: scale(1.05);
-}
-
-/* Events Section specific styling */
+/* Events Section accent */
 .events-section .grid-item {
-  border: 1px solid rgba(202, 55, 28, 0.15);
+  border: 1px solid rgba(202, 55, 28, 0.12);
 }
 
-.events-section .grid-item:hover {
-  border-color: rgba(202, 55, 28, 0.4);
-}
-
-/* Lightbox Styles */
+/* ========================================
+   LIGHTBOX - Optimized for speed
+   ======================================== */
 .lightbox-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.97);
-  z-index: 9999;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 99999;
   display: flex;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(20px);
 }
 
 .lightbox-container {
   position: relative;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -539,46 +516,67 @@ export default {
 
 .lightbox-close {
   position: absolute;
-  top: 2rem;
-  right: 2rem;
+  top: 1.5rem;
+  right: 1.5rem;
   background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: none;
   color: white;
+  font-size: 2rem;
   cursor: pointer;
   z-index: 10;
-  width: 50px;
-  height: 50px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  line-height: 1;
+  transition: background 0.15s ease;
 }
 
 .lightbox-close:hover {
   background: #ca371c;
-  border-color: #ca371c;
-  transform: scale(1.1);
 }
 
 .lightbox-image-wrapper {
   max-width: 85vw;
-  max-height: 85vh;
+  max-height: 80vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  min-width: 200px;
+  min-height: 200px;
+}
+
+.lightbox-loader {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #ca371c;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  position: absolute;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 .lightbox-image {
   max-width: 100%;
-  max-height: 100%;
+  max-height: 80vh;
   width: auto;
   height: auto;
   object-fit: contain;
   user-select: none;
-  border-radius: 8px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.lightbox-image.visible {
+  opacity: 1;
 }
 
 .lightbox-nav {
@@ -586,66 +584,59 @@ export default {
   top: 50%;
   transform: translateY(-50%);
   background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: none;
   color: white;
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  font-size: 2.5rem;
+  font-weight: 200;
+  line-height: 1;
   z-index: 10;
-  backdrop-filter: blur(10px);
+  transition: background 0.15s ease;
 }
 
 .lightbox-nav:hover {
   background: #ca371c;
-  border-color: #ca371c;
-  transform: translateY(-50%) scale(1.1);
 }
 
 .lightbox-prev {
-  left: 2rem;
+  left: 1.5rem;
 }
 
 .lightbox-next {
-  right: 2rem;
+  right: 1.5rem;
 }
 
 .lightbox-counter {
   position: absolute;
-  bottom: 7rem;
+  bottom: 6rem;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.6);
   color: white;
-  padding: 0.6rem 1.5rem;
-  border-radius: 30px;
-  font-size: 0.95rem;
-  font-weight: 500;
+  padding: 0.5rem 1.25rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
   font-family: 'Montserrat', sans-serif;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.05em;
 }
 
 .lightbox-thumbnails {
   position: absolute;
-  bottom: 2rem;
+  bottom: 1.5rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 0.6rem;
-  justify-content: center;
+  gap: 0.5rem;
   max-width: 90vw;
   overflow-x: auto;
-  padding: 0.75rem;
+  padding: 0.5rem;
   scrollbar-width: none;
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
 }
 
 .lightbox-thumbnails::-webkit-scrollbar {
@@ -653,27 +644,26 @@ export default {
 }
 
 .lightbox-thumb {
-  width: 65px;
-  height: 65px;
+  width: 55px;
+  height: 55px;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 6px;
   overflow: hidden;
   border: 2px solid transparent;
-  transition: all 0.3s ease;
   flex-shrink: 0;
-  opacity: 0.5;
+  opacity: 0.4;
+  padding: 0;
+  background: none;
+  transition: opacity 0.15s ease, border-color 0.15s ease;
 }
 
 .lightbox-thumb:hover {
-  opacity: 0.85;
-  border-color: rgba(255, 255, 255, 0.5);
-  transform: scale(1.05);
+  opacity: 0.7;
 }
 
 .lightbox-thumb.active {
   border-color: #ca371c;
   opacity: 1;
-  transform: scale(1.1);
 }
 
 .lightbox-thumb img {
@@ -683,41 +673,11 @@ export default {
   pointer-events: none;
 }
 
-/* Animations */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-.slide-fade-enter-active {
-  transition: all 0.3s ease;
-}
-
-.slide-fade-leave-active {
-  transition: all 0.2s ease;
-}
-
-.slide-fade-enter-from {
-  opacity: 0;
-  transform: scale(0.95);
-}
-
-.slide-fade-leave-to {
-  opacity: 0;
-  transform: scale(1.02);
-}
-
-/* Responsive Design */
+/* ========================================
+   RESPONSIVE
+   ======================================== */
 @media (max-width: 1400px) {
-  .pinterest-grid {
-    column-count: 3;
-  }
-  
+  .pinterest-grid,
   .events-grid {
     column-count: 3;
   }
@@ -728,176 +688,91 @@ export default {
 }
 
 @media (max-width: 1024px) {
-  .pinterest-grid {
-    column-count: 2;
-  }
-  
-  .events-grid {
-    column-count: 2;
-  }
-  
+  .pinterest-grid,
+  .events-grid,
   .main-grid {
     column-count: 2;
   }
   
   .gallery-section {
-    padding: 3rem 1.5rem;
+    padding: 2.5rem 1.5rem;
   }
 }
 
 @media (max-width: 768px) {
   .gallery-hero {
-    min-height: 30vh;
-    padding: 5rem 1.5rem 3rem;
+    min-height: 25vh;
+    padding: 4rem 1.5rem 2.5rem;
   }
   
   .gallery-title {
-    font-size: 3rem;
-  }
-  
-  .gallery-subtitle {
-    font-size: 0.95rem;
+    font-size: 2.75rem;
   }
   
   .pinterest-grid,
   .events-grid,
   .main-grid {
     column-count: 2;
-    column-gap: 0.75rem;
+    column-gap: 0.6rem;
   }
   
   .grid-item {
-    margin-bottom: 0.75rem;
-    border-radius: 12px;
+    margin-bottom: 0.6rem;
+    border-radius: 10px;
   }
   
   .gallery-section {
-    padding: 2.5rem 1rem;
+    padding: 2rem 1rem;
   }
   
   .section-header {
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
   
   .section-title {
-    font-size: 1.25rem;
-    letter-spacing: 0.1em;
-  }
-  
-  .section-divider {
-    padding: 2rem 1rem;
-    gap: 1.5rem;
-  }
-  
-  .divider-logo {
-    width: 40px;
+    font-size: 1.15rem;
   }
   
   /* Lightbox mobile */
   .lightbox-close {
     top: 1rem;
     right: 1rem;
-    width: 44px;
-    height: 44px;
+    width: 42px;
+    height: 42px;
+    font-size: 1.75rem;
   }
   
   .lightbox-nav {
-    width: 50px;
-    height: 50px;
+    width: 44px;
+    height: 44px;
+    font-size: 2rem;
   }
   
   .lightbox-prev {
-    left: 0.75rem;
+    left: 0.5rem;
   }
   
   .lightbox-next {
-    right: 0.75rem;
+    right: 0.5rem;
   }
   
   .lightbox-image-wrapper {
     max-width: 95vw;
-    max-height: 75vh;
+    max-height: 70vh;
+  }
+  
+  .lightbox-image {
+    max-height: 70vh;
   }
   
   .lightbox-counter {
-    bottom: 5.5rem;
-    font-size: 0.85rem;
-    padding: 0.5rem 1rem;
+    bottom: 5rem;
+    font-size: 0.8rem;
   }
   
   .lightbox-thumbnails {
     bottom: 1rem;
     gap: 0.4rem;
-    padding: 0.5rem;
-  }
-  
-  .lightbox-thumb {
-    width: 50px;
-    height: 50px;
-    border-radius: 6px;
-  }
-}
-
-@media (max-width: 480px) {
-  .gallery-hero {
-    min-height: 25vh;
-    padding: 4rem 1rem 2.5rem;
-  }
-  
-  .gallery-title {
-    font-size: 2.5rem;
-  }
-  
-  .gallery-subtitle {
-    font-size: 0.85rem;
-  }
-  
-  .pinterest-grid,
-  .events-grid,
-  .main-grid {
-    column-count: 2;
-    column-gap: 0.5rem;
-  }
-  
-  .grid-item {
-    margin-bottom: 0.5rem;
-    border-radius: 10px;
-  }
-  
-  .gallery-section {
-    padding: 2rem 0.75rem;
-  }
-  
-  .section-title {
-    font-size: 1.1rem;
-  }
-  
-  .section-description {
-    font-size: 0.85rem;
-  }
-  
-  .section-accent {
-    width: 40px;
-    margin-bottom: 1rem;
-  }
-  
-  .section-divider {
-    padding: 1.5rem 0.75rem;
-    gap: 1rem;
-  }
-  
-  .divider-logo {
-    width: 35px;
-  }
-  
-  .lightbox-nav {
-    width: 44px;
-    height: 44px;
-  }
-  
-  .lightbox-nav svg {
-    width: 24px;
-    height: 24px;
   }
   
   .lightbox-thumb {
@@ -906,23 +781,52 @@ export default {
   }
 }
 
-/* Touch device optimizations */
-@media (hover: none) and (pointer: coarse) {
+@media (max-width: 480px) {
+  .gallery-hero {
+    padding: 3.5rem 1rem 2rem;
+  }
+  
+  .gallery-title {
+    font-size: 2.25rem;
+  }
+  
+  .pinterest-grid,
+  .events-grid,
+  .main-grid {
+    column-gap: 0.5rem;
+  }
+  
+  .grid-item {
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+  }
+  
+  .gallery-section {
+    padding: 1.5rem 0.75rem;
+  }
+  
+  .section-divider {
+    padding: 1.5rem 0.75rem;
+  }
+  
+  .divider-logo {
+    width: 30px;
+  }
+  
+  .lightbox-thumb {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Disable hover effects on touch */
+@media (hover: none) {
   .grid-item:hover {
     transform: none;
   }
   
-  .grid-item:active {
-    transform: scale(0.98);
-  }
-  
   .image-overlay {
-    opacity: 0;
-  }
-  
-  .grid-item:active .image-overlay {
-    opacity: 1;
+    display: none;
   }
 }
 </style>
-
