@@ -127,7 +127,10 @@
       "howManyPeople": "How many people ?",
       "phone": "Phone Number",
       "comingSoon": "Coming soon...",
-      "submitButton": "Book Table"
+      "submitButton": "Book Table",
+      "successMessage": "Your reservation has been submitted successfully! We will contact you shortly to confirm.",
+      "selectDateError": "Please select a date",
+      "selectTimeError": "Please select a time"
     },
     "datePicker": {
       "selectDate": "Select Date",
@@ -171,7 +174,8 @@
         "10to30": "10 - 30 people",
         "30to50": "30 - 50 people",
         "over50": "50+ people"
-      }
+      },
+      "successMessage": "Your inquiry has been submitted successfully! We will contact you soon to discuss your event."
     }
   }
 } 

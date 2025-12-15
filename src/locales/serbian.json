@@ -118,7 +118,10 @@
       "howManyPeople": "Koliko ljudi ?",
       "phone": "Broj Telefona",
       "comingSoon": "Uskoro...",
-      "submitButton": "Rezerviši Sto"
+      "submitButton": "Rezerviši Sto",
+      "successMessage": "Vaša rezervacija je uspešno poslata! Kontaktiraćemo vas uskoro da potvrdimo.",
+      "selectDateError": "Molimo izaberite datum",
+      "selectTimeError": "Molimo izaberite vreme"
     },
     "datePicker": {
       "selectDate": "Izaberite Datum",
@@ -162,7 +165,8 @@
         "10to30": "10 - 30 ljudi",
         "30to50": "30 - 50 ljudi",
         "over50": "50+ ljudi"
-      }
+      },
+      "successMessage": "Vaš upit je uspešno poslat! Kontaktiraćemo vas uskoro da razgovaramo o vašem događaju."
     }
   }
 } 

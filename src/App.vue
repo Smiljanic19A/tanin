@@ -54,7 +54,7 @@
       </div>
     </transition>
 
-    <nav class="navbar">
+    <nav v-if="!isAdminRoute" class="navbar">
       <div class="nav-container">
         <!-- Left Side: Logo -->
         <div class="nav-left">
@@ -103,7 +103,7 @@
     </nav>
 
     <!-- Navigation Drawer -->
-    <div class="nav-drawer-overlay" :class="{ 'open': isNavDrawerOpen }" @click="closeNavDrawer">
+    <div v-if="!isAdminRoute" class="nav-drawer-overlay" :class="{ 'open': isNavDrawerOpen }" @click="closeNavDrawer">
       <div class="nav-drawer" :class="{ 'open': isNavDrawerOpen }" @click.stop>
         <div class="nav-drawer-content">
           <nav class="main-nav">
@@ -151,12 +151,12 @@
       </div>
     </div>
 
-    <main class="main-content">
+    <main class="main-content" :class="{ 'no-margin': isAdminRoute }">
       <router-view/>
     </main>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer v-if="!isAdminRoute" class="footer">
       <div class="footer-content">
         <!-- Footer Logo & Name -->
         <div class="footer-section footer-brand">
@@ -261,6 +261,9 @@ export default {
     },
     currentYear() {
       return new Date().getFullYear()
+    },
+    isAdminRoute() {
+      return this.$route.path.startsWith('/admin')
     }
   },
   methods: {
@@ -1128,6 +1131,11 @@ p {
 .main-content {
   margin-top: 70px; /* Account for fixed navbar */
   min-height: calc(100vh - 70px);
+}
+
+.main-content.no-margin {
+  margin-top: 0;
+  min-height: 100vh;
 }
 
 /* Footer Styles */

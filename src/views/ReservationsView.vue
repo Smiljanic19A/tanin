@@ -201,19 +201,38 @@
                 />
               </div>
 
-              <!-- Submit -->
-              <button type="submit" class="submit-button">
-                <span class="button-text">
-                  <transition name="slide-text" mode="out-in">
-                    <span :key="currentLanguage + 'reservations.bookingForm.submitButton'">{{ $t('reservations.bookingForm.submitButton') }}</span>
-                  </transition>
-                </span>
-                <span class="button-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="5" y1="12" x2="19" y2="12"/>
-                    <polyline points="12 5 19 12 12 19"/>
+              <!-- Submit Message -->
+              <transition name="fade-slide">
+                <div v-if="submitMessage && activeTab === 'booking'" class="submit-message" :class="{ success: submitSuccess, error: !submitSuccess }">
+                  <svg v-if="submitSuccess" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
                   </svg>
-                </span>
+                  <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </svg>
+                  <span>{{ submitMessage }}</span>
+                </div>
+              </transition>
+
+              <!-- Submit -->
+              <button type="submit" class="submit-button" :disabled="isSubmitting">
+                <span v-if="isSubmitting" class="loading-spinner"></span>
+                <template v-else>
+                  <span class="button-text">
+                    <transition name="slide-text" mode="out-in">
+                      <span :key="currentLanguage + 'reservations.bookingForm.submitButton'">{{ $t('reservations.bookingForm.submitButton') }}</span>
+                    </transition>
+                  </span>
+                  <span class="button-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="5" y1="12" x2="19" y2="12"/>
+                      <polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                  </span>
+                </template>
               </button>
             </form>
           </div>
@@ -379,19 +398,38 @@
                 ></textarea>
               </div>
 
-              <!-- Submit -->
-              <button type="submit" class="submit-button">
-                <span class="button-text">
-                  <transition name="slide-text" mode="out-in">
-                    <span :key="currentLanguage + 'reservations.privateForm.submitButton'">{{ $t('reservations.privateForm.submitButton') }}</span>
-                  </transition>
-                </span>
-                <span class="button-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="22" y1="2" x2="11" y2="13"/>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              <!-- Submit Message -->
+              <transition name="fade-slide">
+                <div v-if="submitMessage && activeTab === 'private'" class="submit-message" :class="{ success: submitSuccess, error: !submitSuccess }">
+                  <svg v-if="submitSuccess" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
                   </svg>
-                </span>
+                  <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </svg>
+                  <span>{{ submitMessage }}</span>
+                </div>
+              </transition>
+
+              <!-- Submit -->
+              <button type="submit" class="submit-button" :disabled="isSubmitting">
+                <span v-if="isSubmitting" class="loading-spinner"></span>
+                <template v-else>
+                  <span class="button-text">
+                    <transition name="slide-text" mode="out-in">
+                      <span :key="currentLanguage + 'reservations.privateForm.submitButton'">{{ $t('reservations.privateForm.submitButton') }}</span>
+                    </transition>
+                  </span>
+                  <span class="button-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="22" y1="2" x2="11" y2="13"/>
+                      <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                    </svg>
+                  </span>
+                </template>
               </button>
             </form>
           </div>
@@ -474,6 +512,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import translationMixin from '@/mixins/translationMixin'
+import api from '@/services/api'
 
 export default {
   name: 'ReservationsView',
@@ -483,33 +522,26 @@ export default {
       activeTab: 'booking',
       showDatePicker: false,
       currentDate: new Date(),
-      selectedDate: new Date(2025, 1, 20),
+      selectedDate: null,
       guestCount: 2,
-      bookedDates: [
-        new Date(2024, 11, 15),
-        new Date(2024, 11, 22),
-        new Date(2024, 11, 24),
-        new Date(2024, 11, 25),
-        new Date(2024, 11, 31),
-        new Date(2025, 0, 1),
-        new Date(2025, 0, 14),
-        new Date(2025, 0, 20),
-        new Date(2025, 1, 14),
-        new Date(2025, 1, 28),
-      ],
+      bookedDates: [],
       bookingForm: {
         time: '',
         phone: '',
         reservationType: ''
       },
       privateForm: {
-        date: new Date(2025, 1, 20),
+        date: null,
         email: '',
         eventType: '',
         message: '',
         budget: '',
         peopleRange: ''
-      }
+      },
+      // UI State
+      isSubmitting: false,
+      submitMessage: null,
+      submitSuccess: false
     }
   },
   computed: {
@@ -654,19 +686,159 @@ export default {
         this.guestCount--;
       }
     },
-    submitBooking() {
-      // Handle booking submission
-      console.log('Booking submitted:', {
-        date: this.selectedDate,
-        time: this.bookingForm.time,
-        guests: this.guestCount,
-        phone: this.bookingForm.phone
-      });
+    async submitBooking() {
+      // Validate
+      if (!this.selectedDate) {
+        this.submitMessage = this.$t('reservations.bookingForm.selectDateError') || 'Please select a date'
+        this.submitSuccess = false
+        return
+      }
+      if (!this.bookingForm.time) {
+        this.submitMessage = this.$t('reservations.bookingForm.selectTimeError') || 'Please select a time'
+        this.submitSuccess = false
+        return
+      }
+      if (!this.bookingForm.reservationType) {
+        this.submitMessage = 'Please select a reservation type'
+        this.submitSuccess = false
+        return
+      }
+      if (!this.bookingForm.phone) {
+        this.submitMessage = 'Please enter your phone number'
+        this.submitSuccess = false
+        return
+      }
+
+      this.isSubmitting = true
+      this.submitMessage = null
+
+      try {
+        // Format date as YYYY-MM-DD
+        const formattedDate = this.formatDateForApi(this.selectedDate)
+        
+        const response = await api.createBooking({
+          date: formattedDate,
+          time: this.bookingForm.time,
+          guests: this.guestCount,
+          reservation_type: this.bookingForm.reservationType,
+          phone: this.bookingForm.phone
+        })
+
+        if (response.ok && response.data.success) {
+          this.submitSuccess = true
+          this.submitMessage = this.$t('reservations.bookingForm.successMessage') || 'Your reservation has been submitted successfully! We will contact you shortly.'
+          // Reset form
+          this.selectedDate = null
+          this.bookingForm = { time: '', phone: '', reservationType: '' }
+          this.guestCount = 2
+        } else {
+          this.submitSuccess = false
+          const errors = response.data.errors
+          if (errors) {
+            this.submitMessage = Object.values(errors).flat().join(', ')
+          } else {
+            this.submitMessage = response.data.message || 'Failed to submit reservation'
+          }
+        }
+      } catch (error) {
+        this.submitSuccess = false
+        this.submitMessage = 'Unable to submit reservation. Please try again later.'
+        console.error('Booking error:', error)
+      } finally {
+        this.isSubmitting = false
+      }
     },
-    submitPrivateInquiry() {
-      // Handle private inquiry submission
-      console.log('Private inquiry submitted:', this.privateForm);
+
+    async submitPrivateInquiry() {
+      // Validate
+      if (!this.privateForm.date) {
+        this.submitMessage = 'Please select a date'
+        this.submitSuccess = false
+        return
+      }
+      if (!this.privateForm.email) {
+        this.submitMessage = 'Please enter your email'
+        this.submitSuccess = false
+        return
+      }
+      if (!this.privateForm.eventType) {
+        this.submitMessage = 'Please select an event type'
+        this.submitSuccess = false
+        return
+      }
+      if (!this.privateForm.peopleRange) {
+        this.submitMessage = 'Please select people range'
+        this.submitSuccess = false
+        return
+      }
+      if (!this.privateForm.budget) {
+        this.submitMessage = 'Please select a budget range'
+        this.submitSuccess = false
+        return
+      }
+
+      this.isSubmitting = true
+      this.submitMessage = null
+
+      try {
+        // Format date as YYYY-MM-DD
+        const formattedDate = this.formatDateForApi(this.privateForm.date)
+        
+        const response = await api.createPrivateReservation({
+          date: formattedDate,
+          email: this.privateForm.email,
+          event_type: this.privateForm.eventType,
+          people_range: this.privateForm.peopleRange,
+          budget: this.privateForm.budget,
+          message: this.privateForm.message || ''
+        })
+
+        if (response.ok && response.data.success) {
+          this.submitSuccess = true
+          this.submitMessage = this.$t('reservations.privateForm.successMessage') || 'Your inquiry has been submitted successfully! We will contact you soon.'
+          // Reset form
+          this.privateForm = {
+            date: null,
+            email: '',
+            eventType: '',
+            message: '',
+            budget: '',
+            peopleRange: ''
+          }
+        } else {
+          this.submitSuccess = false
+          const errors = response.data.errors
+          if (errors) {
+            this.submitMessage = Object.values(errors).flat().join(', ')
+          } else {
+            this.submitMessage = response.data.message || 'Failed to submit inquiry'
+          }
+        }
+      } catch (error) {
+        this.submitSuccess = false
+        this.submitMessage = 'Unable to submit inquiry. Please try again later.'
+        console.error('Private inquiry error:', error)
+      } finally {
+        this.isSubmitting = false
+      }
+    },
+
+    formatDateForApi(date) {
+      const year = date.getFullYear()
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const day = String(date.getDate()).padStart(2, '0')
+      return `${year}-${month}-${day}`
     }
+  },
+  mounted() {
+    // Set default date to tomorrow
+    const tomorrow = new Date()
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    this.selectedDate = tomorrow
+    this.privateForm.date = new Date(tomorrow)
+    
+    // Set current date for calendar
+    this.currentDate = new Date()
   }
 }
 </script>
@@ -1109,8 +1281,58 @@ export default {
   height: 100%;
 }
 
-.submit-button:hover .button-icon {
+.submit-button:hover:not(:disabled) .button-icon {
   transform: translateX(4px);
+}
+
+.submit-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Submit Message */
+.submit-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.submit-message svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.submit-message.success {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #10b981;
+}
+
+.submit-message.error {
+  background: rgba(202, 55, 28, 0.1);
+  border: 1px solid rgba(202, 55, 28, 0.3);
+  color: #ca371c;
 }
 
 /* Modal */
