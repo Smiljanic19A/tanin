@@ -14,6 +14,11 @@ const routes = [
     component: MenuView
   },
   {
+    path: '/gallery',
+    name: 'Gallery',
+    component: () => import(/* webpackChunkName: "gallery" */ '../views/GalleryView.vue')
+  },
+  {
     path: '/reservations',
     name: 'Reservations',
     component: () => import(/* webpackChunkName: "reservations" */ '../views/ReservationsView.vue')

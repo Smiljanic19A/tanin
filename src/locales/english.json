@@ -2,8 +2,17 @@
   "nav": {
     "home": "Home",
     "menu": "Menu",
+    "gallery": "Gallery",
     "reservations": "Reservations",
     "location": "Location"
+  },
+  "gallery": {
+    "title": "Our Gallery",
+    "subtitle": "A glimpse into the Tannin experience",
+    "events": "Events",
+    "eventsDescription": "Wine tastings, live music nights, and special celebrations at Tannin",
+    "moments": "Moments at Tannin",
+    "momentsDescription": "The atmosphere, the food, and the unforgettable experiences"
   },
   "footer": {
     "quickLinks": "Quick Links",

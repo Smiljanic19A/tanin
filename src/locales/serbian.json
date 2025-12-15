@@ -2,8 +2,17 @@
   "nav": {
     "home": "Početna",
     "menu": "Meni",
+    "gallery": "Galerija",
     "reservations": "Rezervacije",
     "location": "Lokacija"
+  },
+  "gallery": {
+    "title": "Naša Galerija",
+    "subtitle": "Uvid u Tannin iskustvo",
+    "events": "Događaji",
+    "eventsDescription": "Degustacije vina, veče živih nastupa i posebne proslave u Tanninu",
+    "moments": "Momenti u Tanninu",
+    "momentsDescription": "Atmosfera, hrana i nezaboravna iskustva"
   },
   "footer": {
     "quickLinks": "Brzi Linkovi",

@@ -123,6 +123,14 @@
               </span>
               <span class="nav-arrow">→</span>
             </router-link>
+            <router-link to="/gallery" class="nav-main-item" @click="closeNavDrawer">
+              <span class="nav-text">
+                <transition name="slide-text" mode="out-in">
+                  <span :key="currentLanguage + 'nav.gallery'">{{ $t('nav.gallery') }}</span>
+                </transition>
+              </span>
+              <span class="nav-arrow">→</span>
+            </router-link>
             <router-link to="/reservations" class="nav-main-item" @click="closeNavDrawer">
               <span class="nav-text">
                 <transition name="slide-text" mode="out-in">
@@ -172,6 +180,11 @@
             <router-link to="/menu" class="footer-link" @click="closeNavDrawer">
               <transition name="slide-text" mode="out-in">
                 <span :key="currentLanguage + 'nav.menu'">{{ $t('nav.menu') }}</span>
+              </transition>
+            </router-link>
+            <router-link to="/gallery" class="footer-link" @click="closeNavDrawer">
+              <transition name="slide-text" mode="out-in">
+                <span :key="currentLanguage + 'nav.gallery'">{{ $t('nav.gallery') }}</span>
               </transition>
             </router-link>
             <router-link to="/reservations" class="footer-link" @click="closeNavDrawer">
