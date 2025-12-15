@@ -478,6 +478,7 @@ export default {
   
   .restaurant-section {
     padding: 3rem 1.5rem;
+    min-height: auto;
   }
   
   .restaurant-logo-image {
@@ -495,18 +496,22 @@ export default {
     text-align: left;
   }
   
+  .wine-collection-section {
+    min-height: auto;
+    padding: 2rem 0;
+  }
+  
   .contact-section {
-    height: 100vh;
+    min-height: auto;
+    height: auto;
+    flex-direction: column;
   }
   
   .contact-hero-image {
     min-height: auto;
     height: auto;
-  }
-  
-  .logo-overlay {
-    top: 1rem;
-    left: 1rem;
+    width: 100%;
+    padding: 1rem;
   }
   
   .logo-overlay {
@@ -519,17 +524,19 @@ export default {
   }
   
   .contact-info-container {
-    padding: 1rem 1.5rem;
+    padding: 2rem 1rem;
+    flex: none;
   }
   
   .contact-grid {
     grid-template-columns: 1fr;
     grid-template-rows: auto;
-    gap: 2.5rem;
+    gap: 1.5rem;
+    max-width: 100%;
   }
   
   .contact-item {
-    padding: 1rem;
+    padding: 0.75rem;
   }
   
   .contact-grid::before {
@@ -537,7 +544,15 @@ export default {
   }
   
   .contact-title {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .contact-link,
+  .contact-text,
+  .hours-text,
+  .hours-time {
+    font-size: 0.95rem;
   }
 }
 
@@ -560,6 +575,7 @@ export default {
   
   .restaurant-section {
     padding: 2rem 1rem;
+    min-height: auto;
   }
   
   .restaurant-logo {
@@ -580,13 +596,20 @@ export default {
     line-height: 1.6;
   }
   
+  .wine-collection-section {
+    min-height: auto;
+    padding: 1.5rem 0;
+  }
+  
   .contact-section {
-    height: 100vh;
+    min-height: auto;
+    height: auto;
   }
   
   .contact-hero-image {
     min-height: auto;
     height: auto;
+    padding: 0.75rem;
   }
   
   .logo-overlay {
@@ -599,20 +622,35 @@ export default {
   }
   
   .contact-info-container {
-    padding: 0.5rem 1rem;
+    padding: 1.5rem 0.75rem;
+  }
+  
+  .contact-grid {
+    gap: 1.25rem;
+  }
+  
+  .contact-item {
+    padding: 0.5rem;
   }
   
   .contact-title {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    margin-bottom: 0.4rem;
   }
   
   .hours-text,
   .hours-time {
-    font-size: 1rem;
+    font-size: 0.9rem;
+    margin: 0.25rem 0;
   }
   
   .contact-text {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    margin: 0.25rem 0;
+  }
+  
+  .contact-link {
+    font-size: 0.85rem;
   }
 }
 

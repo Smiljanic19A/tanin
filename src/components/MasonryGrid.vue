@@ -104,26 +104,43 @@ export default {
       imageQueue: [],
       slideTimer: null,
       galleryOpen: false,
-      currentGalleryIndex: 0
+      currentGalleryIndex: 0,
+      isMobile: false
     }
   },
   computed: {
     columnCount() {
+      if (this.isMobile) return 1
       if (this.columns) return this.columns
       return 3
+    },
+    effectiveDisplayCount() {
+      // Show only 1 image on mobile, otherwise use prop value
+      return this.isMobile ? 1 : this.displayCount
     }
   },
   methods: {
+    checkMobile() {
+      const wasMobile = this.isMobile
+      this.isMobile = window.innerWidth <= 768
+      
+      // Reinitialize images if mobile state changed
+      if (wasMobile !== this.isMobile) {
+        this.stopAutoSlide()
+        this.initializeImages()
+        this.startAutoSlide()
+      }
+    },
     initializeImages() {
-      // Display only first displayCount images (default 3)
-      this.imagePositions = this.images.slice(0, this.displayCount).map((src, index) => ({
+      // Display only effectiveDisplayCount images (1 on mobile, displayCount otherwise)
+      this.imagePositions = this.images.slice(0, this.effectiveDisplayCount).map((src, index) => ({
         src,
         fading: false,
         index
       }))
       
       // Queue contains remaining images for rotation
-      this.imageQueue = this.images.slice(this.displayCount)
+      this.imageQueue = this.images.slice(this.effectiveDisplayCount)
     },
     rotateOneImage() {
       if (!this.autoSlide || this.imagePositions.length === 0 || this.images.length === 0) return
@@ -217,13 +234,16 @@ export default {
     }
   },
   mounted() {
+    this.checkMobile()
     this.initializeImages()
     this.$nextTick(() => {
       this.startAutoSlide()
     })
+    window.addEventListener('resize', this.checkMobile)
   },
   beforeUnmount() {
     this.stopAutoSlide()
+    window.removeEventListener('resize', this.checkMobile)
   }
 }
 </script>
@@ -529,38 +549,16 @@ export default {
   }
 }
 
-/* Smaller Tablet - 2 columns */
+
+/* Mobile - 1 image at a time */
 @media (max-width: 768px) {
   .masonry-grid-container {
-    padding: 2rem 1rem;
-  }
-  
-  .masonry-columns {
-    column-count: 2 !important;
-    column-gap: 1rem;
-    padding: 0 0.5rem;
-  }
-  
-  .masonry-item {
-    margin-bottom: 1rem;
-    border-radius: 10px;
-  }
-  
-  .masonry-image {
-    border-radius: 10px;
-  }
-  
-  .masonry-overlay {
-    border-radius: 10px;
-  }
-}
-
-/* Mobile - 1 column */
-@media (max-width: 480px) {
-  .masonry-grid-container {
-    padding: 1.5rem 0.5rem;
+    padding: 1rem;
     min-height: auto;
     height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
   .masonry-columns {
@@ -568,29 +566,53 @@ export default {
     column-gap: 0;
     padding: 0;
     min-height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
   }
   
   .masonry-item {
-    margin-bottom: 1rem;
-    border-radius: 8px;
+    margin-bottom: 0;
+    border-radius: 12px;
     page-break-inside: avoid;
     break-inside: avoid;
     -webkit-column-break-inside: avoid;
+    width: 100%;
+    max-width: 100%;
   }
   
   .masonry-image {
-    border-radius: 8px;
+    border-radius: 12px;
     width: 100%;
     height: auto;
     display: block;
+    max-height: 50vh;
+    object-fit: cover;
   }
   
   .masonry-overlay {
-    border-radius: 8px;
+    border-radius: 12px;
   }
   
   .view-icon {
     font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .masonry-grid-container {
+    padding: 0.75rem;
+  }
+  
+  .masonry-item {
+    border-radius: 10px;
+  }
+  
+  .masonry-image {
+    border-radius: 10px;
+    max-height: 45vh;
   }
 }
 </style>
