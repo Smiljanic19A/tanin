@@ -1,5 +1,59 @@
 <template>
   <div id="app" :class="{ 'dark-mode': isDarkMode }">
+    <!-- Loading Screen -->
+    <transition name="fade-loader">
+      <div v-if="isLoading" class="loading-screen" :class="{ 'dark': isDarkMode }">
+        <div class="loading-content">
+          <!-- Logo -->
+          <div class="logo-container-loader">
+            <img :src="currentLogo" alt="Tanin Logo" class="loading-logo">
+          </div>
+          
+          <!-- Wine glass filling animation -->
+          <div class="wine-glass">
+            <div class="glass-stem"></div>
+            <div class="glass-bowl">
+              <div class="wine-fill"></div>
+            </div>
+          </div>
+          
+          <!-- Elegant text -->
+          <div class="loading-text-container">
+            <p class="loading-text">
+              <span class="letter" style="animation-delay: 0s">P</span>
+              <span class="letter" style="animation-delay: 0.05s">o</span>
+              <span class="letter" style="animation-delay: 0.1s">u</span>
+              <span class="letter" style="animation-delay: 0.15s">r</span>
+              <span class="letter" style="animation-delay: 0.2s">i</span>
+              <span class="letter" style="animation-delay: 0.25s">n</span>
+              <span class="letter" style="animation-delay: 0.3s">g</span>
+              <span class="letter" style="animation-delay: 0.4s">&nbsp;</span>
+              <span class="letter" style="animation-delay: 0.45s">p</span>
+              <span class="letter" style="animation-delay: 0.5s">e</span>
+              <span class="letter" style="animation-delay: 0.55s">r</span>
+              <span class="letter" style="animation-delay: 0.6s">f</span>
+              <span class="letter" style="animation-delay: 0.65s">e</span>
+              <span class="letter" style="animation-delay: 0.7s">c</span>
+              <span class="letter" style="animation-delay: 0.75s">t</span>
+              <span class="letter" style="animation-delay: 0.8s">i</span>
+              <span class="letter" style="animation-delay: 0.85s">o</span>
+              <span class="letter" style="animation-delay: 0.9s">n</span>
+              <span class="letter dots" style="animation-delay: 1s">.</span>
+              <span class="letter dots" style="animation-delay: 1.2s">.</span>
+              <span class="letter dots" style="animation-delay: 1.4s">.</span>
+            </p>
+          </div>
+          
+          <!-- Progress bar -->
+          <div class="loading-progress">
+            <div class="progress-track">
+              <div class="progress-fill"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
+
     <nav class="navbar">
       <div class="nav-container">
         <!-- Left Side: Logo -->
@@ -180,7 +234,8 @@ export default {
   data() {
     return {
       isNavDrawerOpen: false,
-      isLanguageDropdownOpen: false
+      isLanguageDropdownOpen: false,
+      isLoading: true
     }
   },
   computed: {
@@ -197,6 +252,51 @@ export default {
   },
   methods: {
     ...mapActions(['toggleTheme']),
+    async preloadImages() {
+      // All images to preload
+      const imagesToPreload = [
+        // Logos
+        '/logo_dark.png',
+        '/logo_light.png',
+        '/banner_text_dark.png',
+        '/banner_text_light.png',
+        // Wine grid
+        '/grid1/wine_1.JPG',
+        '/grid1/wine_2.jpg',
+        '/grid1/wine_3.JPG',
+        '/grid1/IMG_9671.JPG',
+        // Food grid
+        '/grid2/food_1.jpg',
+        '/grid2/food_2.jpg',
+        '/grid2/food_3.jpg',
+        '/grid2/food_4.jpg',
+        '/grid2/food_5.jpg',
+        '/grid2/food_6.jpg',
+        // Flags
+        '/english.png',
+        '/serbian.png'
+      ]
+      
+      const loadImage = (src) => {
+        return new Promise((resolve) => {
+          const img = new Image()
+          img.onload = () => resolve(src)
+          img.onerror = () => resolve(src) // Resolve even on error to not block
+          img.src = src
+        })
+      }
+      
+      try {
+        await Promise.all(imagesToPreload.map(loadImage))
+      } catch (e) {
+        console.log('Some images failed to preload')
+      }
+      
+      // Add minimum loading time for the cool animation (2.5 seconds)
+      await new Promise(resolve => setTimeout(resolve, 2500))
+      
+      this.isLoading = false
+    },
     toggleNavDrawer() {
       this.isNavDrawerOpen = !this.isNavDrawerOpen
     },
@@ -255,6 +355,9 @@ export default {
         this.isLanguageDropdownOpen = false
       }
     })
+    
+    // Preload all images before showing page
+    this.preloadImages()
   },
   watch: {
     isDarkMode(newVal) {
@@ -273,6 +376,245 @@ export default {
   --nav-bg: #ffffff;
   --nav-shadow: rgba(0, 0, 0, 0.1);
   --transition: all 0.3s ease;
+}
+
+/* ========================================
+   LOADING SCREEN STYLES
+   ======================================== */
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  overflow: hidden;
+}
+
+.loading-screen.dark {
+  background-color: #000000;
+}
+
+/* Loading content container */
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+/* Logo */
+.logo-container-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-logo {
+  width: 100px;
+  height: auto;
+  animation: logoBreath 3s ease-in-out infinite;
+}
+
+@keyframes logoBreath {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.03); opacity: 1; }
+}
+
+/* Wine glass animation */
+.wine-glass {
+  position: relative;
+  width: 50px;
+  height: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.glass-stem {
+  width: 3px;
+  height: 30px;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 2px;
+  position: absolute;
+  bottom: 0;
+}
+
+.loading-screen.dark .glass-stem {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.glass-stem::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 5px;
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 3px;
+}
+
+.loading-screen.dark .glass-stem::after {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.glass-bowl {
+  width: 42px;
+  height: 48px;
+  border: 2px solid rgba(0, 0, 0, 0.12);
+  border-radius: 0 0 50% 50% / 0 0 100% 100%;
+  position: absolute;
+  top: 0;
+  overflow: hidden;
+}
+
+.loading-screen.dark .glass-bowl {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.wine-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0%;
+  background: linear-gradient(180deg, 
+    #ca371c 0%, 
+    #a02d18 50%,
+    #8b2332 100%);
+  animation: pourWine 2.5s ease-out forwards;
+  border-radius: 0 0 50% 50% / 0 0 100% 100%;
+}
+
+@keyframes pourWine {
+  0% { height: 0%; }
+  100% { height: 70%; }
+}
+
+/* Text animation */
+.loading-text-container {
+  overflow: hidden;
+}
+
+.loading-text {
+  font-family: 'Corinthia', cursive;
+  font-size: 2rem;
+  color: #000;
+  margin: 0;
+  display: flex;
+  letter-spacing: 0.02em;
+}
+
+.loading-screen.dark .loading-text {
+  color: #fff;
+}
+
+.letter {
+  display: inline-block;
+  opacity: 0;
+  animation: letterReveal 0.5s ease forwards;
+}
+
+.letter.dots {
+  animation: letterReveal 0.5s ease forwards, dotPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes letterReveal {
+  0% { 
+    opacity: 0; 
+    transform: translateY(10px); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes dotPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Progress bar */
+.loading-progress {
+  width: 180px;
+}
+
+.progress-track {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.loading-screen.dark .progress-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: #ca371c;
+  border-radius: 1px;
+  animation: progressFill 2.5s ease-out forwards;
+}
+
+@keyframes progressFill {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+/* Fade out transition */
+.fade-loader-enter-active,
+.fade-loader-leave-active {
+  transition: opacity 0.6s ease;
+}
+
+.fade-loader-enter-from {
+  opacity: 0;
+}
+
+.fade-loader-leave-to {
+  opacity: 0;
+}
+
+/* Mobile responsive loading screen */
+@media (max-width: 768px) {
+  .loading-logo {
+    width: 70px;
+  }
+  
+  .loading-text {
+    font-size: 1.6rem;
+  }
+  
+  .wine-glass {
+    width: 40px;
+    height: 75px;
+  }
+  
+  .glass-bowl {
+    width: 34px;
+    height: 40px;
+  }
+  
+  .glass-stem {
+    height: 25px;
+  }
+  
+  .loading-progress {
+    width: 140px;
+  }
+  
+  .loading-content {
+    gap: 2rem;
+  }
 }
 
 [data-theme="dark"], .dark-mode {
