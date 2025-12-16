@@ -38,7 +38,6 @@
               </h2>
               <p class="slide-description">
                 <transition name="slide-text" mode="out-in">
-                  <span :key="currentLanguage + 'menu.wineDescription'">{{ $t('menu.wineDescription') }}</span>
                 </transition>
               </p>
               <button 
@@ -77,7 +76,6 @@
               </h2>
               <p class="slide-description">
                 <transition name="slide-text" mode="out-in">
-                  <span :key="currentLanguage + 'menu.diningDescription'">{{ $t('menu.diningDescription') }}</span>
                 </transition>
               </p>
               <button 
@@ -116,7 +114,6 @@
               </h2>
               <p class="slide-description">
                 <transition name="slide-text" mode="out-in">
-                  <span :key="currentLanguage + 'menu.cocktailDescription'">{{ $t('menu.cocktailDescription') }}</span>
                 </transition>
               </p>
               <button 
